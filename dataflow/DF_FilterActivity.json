@@ -1,0 +1,32 @@
+{
+	"name": "DF_FilterActivity",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsHighSchollDataset_Excel",
+						"type": "DatasetReference"
+					},
+					"name": "HighSchoolData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_HospitalAdmissionDFOp",
+						"type": "DatasetReference"
+					},
+					"name": "HighSchoolDataWithHighIncome"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterBasedOnYearlyIncome"
+				}
+			],
+			"script": "source(output(\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tGender as string,\n\t\tTotalChildren as short,\n\t\tYearlyIncome as integer,\n\t\tEnglishEducation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HighSchoolData\nHighSchoolData filter(greaterOrEqual(YearlyIncome, 100000)) ~> FilterBasedOnYearlyIncome\nFilterBasedOnYearlyIncome sink(input(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['HighSchoolDataWithHighIncome'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> HighSchoolDataWithHighIncome"
+		}
+	}
+}

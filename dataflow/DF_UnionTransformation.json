@@ -1,0 +1,39 @@
+{
+	"name": "DF_UnionTransformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsHighSchoolFeMaleDataip",
+						"type": "DatasetReference"
+					},
+					"name": "HighSchoolFeMaleData"
+				},
+				{
+					"dataset": {
+						"referenceName": "dsHighSchoolMaleDataIP",
+						"type": "DatasetReference"
+					},
+					"name": "HighSchoolMaleData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsHighSchoolDataOP",
+						"type": "DatasetReference"
+					},
+					"name": "HighSchoolDataOPExcel"
+				}
+			],
+			"transformations": [
+				{
+					"name": "UnionMaleAndFemaleHighSchoolData"
+				}
+			],
+			"script": "source(output(\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tGender as string,\n\t\tTotalChildren as string,\n\t\tYearlyIncome as string,\n\t\tEnglishEducation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HighSchoolFeMaleData\nsource(output(\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tGender as string,\n\t\tTotalChildren as string,\n\t\tYearlyIncome as string,\n\t\tEnglishEducation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HighSchoolMaleData\nHighSchoolFeMaleData, HighSchoolMaleData union(byName: true)~> UnionMaleAndFemaleHighSchoolData\nUnionMaleAndFemaleHighSchoolData sink(input(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['HighSchoolDataOPUnion.txt'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> HighSchoolDataOPExcel"
+		}
+	}
+}

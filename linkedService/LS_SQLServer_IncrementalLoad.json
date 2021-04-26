@@ -1,0 +1,16 @@
+{
+	"name": "LS_SQLServer_IncrementalLoad",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=DESKTOP-M5CMCGP;initial catalog=SourceIncremental_Load;user id=sa",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI2MzlmNWVkMy1mNzBhLTRjNGItYjY5Mi1iOWE3Yzg5MTUyZjYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "IRSelfHostedRunTime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

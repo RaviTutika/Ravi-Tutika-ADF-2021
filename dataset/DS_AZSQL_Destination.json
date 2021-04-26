@@ -1,0 +1,13 @@
+{
+	"name": "DS_AZSQL_Destination",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQL_TargetIncrementalLoad",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

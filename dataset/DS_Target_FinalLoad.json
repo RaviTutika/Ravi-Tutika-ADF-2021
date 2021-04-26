@@ -1,0 +1,25 @@
+{
+	"name": "DS_Target_FinalLoad",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQL_TargetIncrementalLoad",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SinkTableName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().SinkTableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

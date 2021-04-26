@@ -1,0 +1,17 @@
+{
+	"name": "DS_AZSQLDB_DestionDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQLDB_DestionDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stgStudent"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

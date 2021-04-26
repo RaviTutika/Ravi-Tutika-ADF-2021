@@ -1,0 +1,32 @@
+{
+	"name": "DF_SelectTransformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsHighSchoolMaleDataIP",
+						"type": "DatasetReference"
+					},
+					"name": "HIghSchollDataMale"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_HospitalAdmissionDFOp",
+						"type": "DatasetReference"
+					},
+					"name": "sinkDestination"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SelectMaleData"
+				}
+			],
+			"script": "source(output(\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tGender as string,\n\t\tTotalChildren as integer,\n\t\tYearlyIncome as integer,\n\t\tEnglishEducation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HIghSchollDataMale\nHIghSchollDataMale select(mapColumn(\n\t\tFirstName,\n\t\tLastName,\n\t\tGender,\n\t\tTotalChildren,\n\t\tYearlyIncome,\n\t\tEnglishEducation,\n\t\tFirstName,\n\t\teach(match(type=='string'),\n\t\t\t'String data type'+$$ = $$)\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectMaleData\nSelectMaleData sink(input(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['MaleData'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDestination"
+		}
+	}
+}

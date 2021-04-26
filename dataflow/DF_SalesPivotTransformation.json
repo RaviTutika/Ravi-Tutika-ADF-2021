@@ -1,0 +1,32 @@
+{
+	"name": "DF_SalesPivotTransformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsSalesDatacsvIP",
+						"type": "DatasetReference"
+					},
+					"name": "SalesData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsPivotedSalesDataOP",
+						"type": "DatasetReference"
+					},
+					"name": "PivotedSalesData"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SalesPivot"
+				}
+			],
+			"script": "source(output(\n\t\tRegion as string,\n\t\tCountry as string,\n\t\t{Item Type} as string,\n\t\t{Sales Channel} as string,\n\t\t{Order Priority} as string,\n\t\t{Order Date} as date,\n\t\t{Order ID} as integer,\n\t\t{Ship Date} as date,\n\t\t{Units Sold} as short,\n\t\t{Unit Price} as double,\n\t\t{Unit Cost} as double,\n\t\t{Total Revenue} as double,\n\t\t{Total Cost} as double,\n\t\t{Total Profit} as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SalesData\nSalesData pivot(groupBy({Item Type}),\n\tpivotBy({Sales Channel}),\n\t{} = sum({Total Revenue}),\n\tcolumnNaming: '$N$V',\n\tlateral: true) ~> SalesPivot\nSalesPivot sink(input(\n\t\tGender as string,\n\t\t{Total Children} as string,\n\t\t{Total Income} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['PivotedSalesDataOP.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PivotedSalesData"
+		}
+	}
+}

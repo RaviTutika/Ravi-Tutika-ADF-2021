@@ -1,0 +1,193 @@
+{
+	"name": "PL_DataLoad",
+	"properties": {
+		"activities": [
+			{
+				"name": "LookUpGetConfigurationData",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SourceGetConfigurationData",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach-LoopThroughConfigurations",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "LookUpGetConfigurationData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('LookUpGetConfigurationData').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Lookup-GetOldWaterMarkConfigurationData",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "SELECT * FROM WaterMarkTable WHERE TableName='@{item().TABLE_NAME}'",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "DS_WaterMarkGetDataOld",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": true
+							}
+						},
+						{
+							"name": "Lookup-NewWaterMarkConfigurationTable",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "SELECT MAX(@{item().ConfigColumn}) AS NewWaterMarkValue\nFROM @{item().TABLE_NAME}",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "DS_SourceGetConfigurationData",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Copy data_DeltaLoad",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Lookup-GetOldWaterMarkConfigurationData",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Lookup-NewWaterMarkConfigurationTable",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "select * from @{item().TABLE_NAME}\nwhere @{item().ConfigColumn} > \n'@{activity('Lookup-GetOldWaterMarkConfigurationData').output.firstRow.LastModifiedValue}' \nand @{item().ConfigColumn} <= \n'@{activity('Lookup-NewWaterMarkConfigurationTable').output.firstRow.NewWaterMarkValue}'",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"sqlWriterStoredProcedureName": {
+										"value": "@item().StoreProcedureNameMergeOperation",
+										"type": "Expression"
+									},
+									"sqlWriterTableType": {
+										"value": "@item().TableType",
+										"type": "Expression"
+									},
+									"storedProcedureTableTypeParameterName": {
+										"value": "@item().TABLE_NAME",
+										"type": "Expression"
+									},
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_IncrementalLoadConfigData",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_Target_FinalLoad",
+									"type": "DatasetReference",
+									"parameters": {
+										"SinkTableName": {
+											"value": "@item().TABLE_NAME",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-04-25T06:28:07Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

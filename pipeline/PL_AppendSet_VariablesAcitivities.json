@@ -1,0 +1,172 @@
+{
+	"name": "PL_AppendSet_VariablesAcitivities",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata - Get List of Files",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_ForeachLoopDataset",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEachLoop - Get Files",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata - Get List of Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata - Get List of Files').output.childitems",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data to Output Blob",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": "input/ForeachLoopData",
+										"wildcardFileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_ForeachLoopDataset",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_OutputHospitalAdmissionData",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Append variable - Copied Files",
+							"type": "AppendVariable",
+							"dependsOn": [
+								{
+									"activity": "Copy data to Output Blob",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "CopiedFilesAppend",
+								"value": {
+									"value": "@item().name",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set variable - Copies Files",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "ForEachLoop - Get Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "SetVariable_ToGet_Copies_Files",
+					"value": {
+						"value": "@variables('CopiedFilesAppend')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"CopiedFilesAppend": {
+				"type": "Array"
+			},
+			"SetVariable_ToGet_Copies_Files": {
+				"type": "Array"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-04-11T15:56:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

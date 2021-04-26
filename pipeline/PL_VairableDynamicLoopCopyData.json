@@ -1,0 +1,97 @@
+{
+	"name": "PL_VairableDynamicLoopCopyData",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEachLoop - Variables To Copy Data",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('TableList')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data - Dynamic Data Loading With Variables",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT * FROM ',item())",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_DimAccountSourceDataset",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_DynamicDataLoadDataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"FileName": {
+											"value": "@concat(item(),'_',formatDateTime(utcnow(),'MM_dd_yyyy'),'.csv')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"TableList": {
+				"type": "Array",
+				"defaultValue": [
+					"dbo.DimCurrency",
+					"dbo.DimEmployee",
+					"dbo.DimProduct",
+					"dbo.DimOrganization"
+				]
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-04-10T21:04:17Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

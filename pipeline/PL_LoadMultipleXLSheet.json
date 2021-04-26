@@ -1,0 +1,104 @@
+{
+	"name": "PL_LoadMultipleXLSheet",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach - Loop Through Sheet Names",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('SheetNames')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data - Multiple Excel Sheets Data",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "adffiles//ExcelDataDegree.xlsx"
+								},
+								{
+									"name": "Destination",
+									"value": "dbo.DegreeData"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "dsExcelMultipleSheetsData",
+									"type": "DatasetReference",
+									"parameters": {
+										"SheetName": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "dsMultipleSheetDataOP",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"SheetNames": {
+				"type": "Array",
+				"defaultValue": [
+					"Graduate",
+					"High School",
+					"Bachelors"
+				]
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-04-22T06:32:02Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

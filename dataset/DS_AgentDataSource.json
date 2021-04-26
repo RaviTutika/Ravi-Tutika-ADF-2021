@@ -1,0 +1,44 @@
+{
+	"name": "DS_AgentDataSource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureBlobStorage_AdfDemos",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "AgentData.xlsx",
+				"folderPath": "input",
+				"container": "adffiles"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "ID",
+				"type": "String"
+			},
+			{
+				"name": "Name",
+				"type": "String"
+			},
+			{
+				"name": "Role",
+				"type": "String"
+			},
+			{
+				"name": "Mobile No",
+				"type": "String"
+			},
+			{
+				"name": "WorkLocation",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,17 @@
+{
+	"name": "ds_DimAccountSourceDataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SqlServerAdventureWorksDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DimHighSchoolData"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

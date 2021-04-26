@@ -1,0 +1,27 @@
+{
+	"name": "TR_EventBasedTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_EventTrigger",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"FileName": "@triggerBody().fileName"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/scripts/blobs/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/8c454b23-1ce0-4311-b964-ea0b0f8ce68f/resourceGroups/RG-StorageAccountTutorial-Demos/providers/Microsoft.Storage/storageAccounts/storageaccountdemos001",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

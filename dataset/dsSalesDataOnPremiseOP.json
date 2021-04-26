@@ -1,0 +1,17 @@
+{
+	"name": "dsSalesDataOnPremiseOP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SqlServerAdventureWorksDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SalesDataOnPremise"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

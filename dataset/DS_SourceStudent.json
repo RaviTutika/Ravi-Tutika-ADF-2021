@@ -1,0 +1,46 @@
+{
+	"name": "DS_SourceStudent",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQLServerOnPremiseStudent",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "studentId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "studentName",
+				"type": "varchar"
+			},
+			{
+				"name": "stream",
+				"type": "varchar"
+			},
+			{
+				"name": "marks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "createDate",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "updateDate",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Student"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,32 @@
+{
+	"name": "DF_XMLParseDataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsBooksXMLDatasetIP",
+						"type": "DatasetReference"
+					},
+					"name": "BooksXMLDataset"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_HospitalAdmissionDFOp",
+						"type": "DatasetReference"
+					},
+					"name": "BooksFlatternData"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FlattenBooksData"
+				}
+			],
+			"script": "source(output(\n\t\t{urn:Test.Namespace,Root} as ({urn:Test.Namespace,catalog} as ({urn:Test.Namespace,book} as ({@id} as string, {urn:Test.Namespace,author} as string, {urn:Test.Namespace,genre} as string, {urn:Test.Namespace,price} as double, {urn:Test.Namespace,publish_date} as date, {urn:Test.Namespace,title} as string)[]))\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tvalidationMode: 'xsd',\n\tnamespaces: true) ~> BooksXMLDataset\nBooksXMLDataset foldDown(unroll({urn:Test.Namespace,Root}.{urn:Test.Namespace,catalog}.{urn:Test.Namespace,book}),\n\tmapColumn(\n\t\t{urn:Test.Namespace,Root}\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> FlattenBooksData\nFlattenBooksData sink(input(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['BooksFlatternData'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> BooksFlatternData"
+		}
+	}
+}

@@ -1,0 +1,32 @@
+{
+	"name": "DF_GroupByTransformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsHighSchollDataset_Excel",
+						"type": "DatasetReference"
+					},
+					"name": "HighSchoolDataset"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsHighSchoolDataOP",
+						"type": "DatasetReference"
+					},
+					"name": "GendeWiseTotalChildrensAndTotalIncome"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AggregateGroupByGender"
+				}
+			],
+			"script": "source(output(\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tGender as string,\n\t\tTotalChildren as integer,\n\t\t{Total YearlyIncome} as integer,\n\t\tEnglishEducation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HighSchoolDataset\nHighSchoolDataset aggregate(groupBy(Gender),\n\t{Total Children} = sum(TotalChildren),\n\t\t{Total Income} = sum({Total YearlyIncome})) ~> AggregateGroupByGender\nAggregateGroupByGender sink(input(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['GendeWiseTotalChildrensAndTotalIncome.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> GendeWiseTotalChildrensAndTotalIncome"
+		}
+	}
+}

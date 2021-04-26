@@ -1,0 +1,155 @@
+{
+	"name": "PL_Until_Wait_Activity",
+	"properties": {
+		"activities": [
+			{
+				"name": "UntilActivity - Get Flag Value",
+				"type": "Until",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@bool(variables('UntilFlag'))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Wait - For 4 Seconds",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 4
+							}
+						},
+						{
+							"name": "Lookup - Check for Status Table",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Wait - For 4 Seconds",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": "SELECT STATUS FROM Status",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_DimAccountSourceDataset",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "If Condition - Check Status",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Lookup - Check for Status Table",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(activity('Lookup - Check for Status Table').output.firstRow.STATUS,'Y')",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Set variable - Update Until Flag",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "UntilFlag",
+											"value": "True"
+										}
+									}
+								]
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "Copy data SchoolData",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "UntilActivity - Get Flag Value",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_DimAccountSourceDataset",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_Destination_AZ_SqlDatabase",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"UntilFlag": {
+				"type": "String",
+				"defaultValue": "False"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-04-13T03:48:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

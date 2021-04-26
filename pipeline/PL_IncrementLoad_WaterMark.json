@@ -1,0 +1,235 @@
+{
+	"name": "PL_IncrementLoad_WaterMark",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup - Get Data From IncrementalConfigTable",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_IncrementalLoadConfigData",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach - Loop Through Incremental Config Table",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup - Get Data From IncrementalConfigTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup - Get Data From IncrementalConfigTable').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Lookup-OldWaterConfigTable",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "SELECT * FROM WaterMarkTable WHERE TableName='@{item().TABLE_NAME}'",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "DS_AZSQL_Destination",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Lookup-NewWaterMarkConfigTable",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "SELECT MAX(@{item().ConfigColumn}) AS NewWaterMarkValue\nFROM @{item().TABLE_NAME}",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "DS_MaxModifiedData",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Stored procedure-UpdateWaterMarkTable",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy data1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[Sp_GetConfigurationTable]",
+								"storedProcedureParameters": {
+									"LastModifiedtime": {
+										"value": {
+											"value": "@activity('Lookup-NewWaterMarkConfigTable').output.firstRow.NewWaterMarkValue",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"TableName": {
+										"value": {
+											"value": "@activity('Lookup-OldWaterConfigTable').output.firstRow.TableName",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AZSQL_TargetIncrementalLoad",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Lookup-OldWaterConfigTable",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Lookup-NewWaterMarkConfigTable",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "select * from @{item().TABLE_NAME}\nwhere @{item().ConfigColumn} > \n'@{activity('Lookup-OldWaterConfigTable').output.firstRow.LastModifiedValue}' \nand @{item().ConfigColumn} <= \n'@{activity('Lookup-NewWaterMarkConfigTable').output.firstRow.NewWaterMarkValue}'",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"sqlWriterStoredProcedureName": {
+										"value": "@item().StoreProcedureNameMergeOperation",
+										"type": "Expression"
+									},
+									"sqlWriterTableType": {
+										"value": "@item().TableType",
+										"type": "Expression"
+									},
+									"storedProcedureTableTypeParameterName": {
+										"value": "@item().TABLE_NAME",
+										"type": "Expression"
+									},
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_MaxModifiedData",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_FInalLoad",
+									"type": "DatasetReference",
+									"parameters": {
+										"SinkTable": {
+											"value": "@item().TABLE_NAME",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-04-25T05:10:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

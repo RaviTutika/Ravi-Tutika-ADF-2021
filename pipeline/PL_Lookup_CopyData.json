@@ -1,0 +1,145 @@
+{
+	"name": "PL_Lookup_CopyData",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEachLoop - Get Table Names",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('TableList')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Lookup - Check for Table Data Exists",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT COUNT(1) AS COUNT FROM dbo.',item())",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_DimAccountSourceDataset",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "If Condition - Filter Only Non Empty Tables",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Lookup - Check for Table Data Exists",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(activity('Lookup - Check for Table Data Exists').output.firstRow.COUNT,0)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Copy Dimesion Data",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlServerSource",
+												"sqlReaderQuery": {
+													"value": "@concat('SELECT * FROM dbo.',item())",
+													"type": "Expression"
+												},
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "DelimitedTextSink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												},
+												"formatSettings": {
+													"type": "DelimitedTextWriteSettings",
+													"quoteAllText": true,
+													"fileExtension": ".txt"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "ds_DimAccountSourceDataset",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ds_DynamicDataLoadDataset",
+												"type": "DatasetReference",
+												"parameters": {
+													"FileName": {
+														"value": "@concat(item(),'_Data','.csv')",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"TableList": {
+				"type": "Array",
+				"defaultValue": [
+					"DimCustomer",
+					"DimAccount",
+					"NoData"
+				]
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-04-11T15:21:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

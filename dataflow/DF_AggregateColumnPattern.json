@@ -1,0 +1,32 @@
+{
+	"name": "DF_AggregateColumnPattern",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_HighSchoolDataset",
+						"type": "DatasetReference"
+					},
+					"name": "HighSchoolDataset"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsHighSchoolDataOP",
+						"type": "DatasetReference"
+					},
+					"name": "GenderWiseTotalIncomeAndChildrenUsingColumPattern"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AggregateGroupbyUsingColumnPattern"
+				}
+			],
+			"script": "source(output(\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tGender as string,\n\t\tTotalChildren as integer,\n\t\tYearlyIncome as integer,\n\t\tEnglishEducation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HighSchoolDataset\nHighSchoolDataset aggregate(groupBy(Gender),\n\teach(match(type=='integer'), concat('Total ', $$) = sum($$))) ~> AggregateGroupbyUsingColumnPattern\nAggregateGroupbyUsingColumnPattern sink(input(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['GenderWiseTotalIncomeAndChildrenUsingColumPattern.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> GenderWiseTotalIncomeAndChildrenUsingColumPattern"
+		}
+	}
+}

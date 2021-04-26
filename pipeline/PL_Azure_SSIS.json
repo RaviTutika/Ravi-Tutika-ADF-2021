@@ -1,0 +1,35 @@
+{
+	"name": "PL_Azure_SSIS",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute SSIS package - table to Blob",
+				"type": "ExecuteSSISPackage",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"packageLocation": {
+						"packagePath": "Azure_SSIS/Azure_SSIS/Package.dtsx",
+						"type": "SSISDB"
+					},
+					"environmentPath": null,
+					"connectVia": {
+						"referenceName": "AzureSSISIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"loggingLevel": "Basic"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-04-16T08:52:03Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

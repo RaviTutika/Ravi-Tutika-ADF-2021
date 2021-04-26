@@ -1,0 +1,28 @@
+{
+	"name": "TR_ScjheduledBasedTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_EventTrigger",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"FileName": "@triggerBody().fileName"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1,
+				"startTime": "2021-04-20T13:01:00",
+				"endTime": "2021-04-21T08:24:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}

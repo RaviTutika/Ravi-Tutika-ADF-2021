@@ -1,0 +1,39 @@
+{
+	"name": "DF_ConditionalSplitTransformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsHighSchollDataset_Excel",
+						"type": "DatasetReference"
+					},
+					"name": "HighSchoolData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_HospitalAdmissionDFOp",
+						"type": "DatasetReference"
+					},
+					"name": "HighSchoolMaleData"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_HospitalAdmissionDFOp",
+						"type": "DatasetReference"
+					},
+					"name": "HighSchoolFeMaleData"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ConditionalSplitGenderbySplit"
+				}
+			],
+			"script": "source(output(\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tGender as string,\n\t\tTotalChildren as string,\n\t\tYearlyIncome as string,\n\t\tEnglishEducation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HighSchoolData\nHighSchoolData split(equals(Gender, 'M'),\n\tdisjoint: false) ~> ConditionalSplitGenderbySplit@(MaleData, FemaleData)\nConditionalSplitGenderbySplit@MaleData sink(input(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['HighSchoolMaleData.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> HighSchoolMaleData\nConditionalSplitGenderbySplit@FemaleData sink(input(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['HighSchoolFeMaleData.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> HighSchoolFeMaleData"
+		}
+	}
+}

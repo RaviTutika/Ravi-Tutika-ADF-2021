@@ -1,0 +1,25 @@
+{
+	"name": "DS_SinkDataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSQLDatabase_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SinkTableName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().SinkTableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

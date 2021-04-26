@@ -1,0 +1,48 @@
+{
+	"name": "PL_CopyDimEmployee_ToCosmosDB",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data - Load Dim Employee Data to CosmosDB",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT [EmployeeKey] AS ID\n      ,[ParentEmployeeKey]\n      ,[EmployeeNationalIDAlternateKey]\n      ,[ParentEmployeeNationalIDAlternateKey]\n      ,[SalesTerritoryKey]\n      ,[FirstName]\n      ,[LastName]\n      ,[MiddleName]\n      ,[NameStyle]\n      ,[Title]\n      ,[HireDate]\n      ,[BirthDate]\n      ,[LoginID]\n      ,[EmailAddress]\n      ,[Phone]\n      ,[MaritalStatus]\n      ,[EmergencyContactName]\n      ,[EmergencyContactPhone]\n      ,[SalariedFlag]\n      ,[Gender]\n      ,[PayFrequency]\n      ,[BaseRate]\n      ,[VacationHours]\n      ,[SickLeaveHours]\n      ,[CurrentFlag]\n      ,[SalesPersonFlag]\n      ,[DepartmentName]\n      ,[StartDate]\n      ,[EndDate]\n      ,[Status]\n      ,[EmployeePhoto]\n  FROM [AdventureWorksDW2017].[dbo].[DimEmployee]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "CosmosDbSqlApiSink",
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_DimEmployeeDatasetSource",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_AZCosmosDB_SQL",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-04-13T05:10:54Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

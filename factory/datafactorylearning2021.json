@@ -1,0 +1,9 @@
+{
+	"name": "datafactorylearning2021",
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "657f66fc-9135-491b-9e61-bff621705c96",
+		"tenantId": "fcc4cb44-6495-4422-87fa-71162cafc55a"
+	}
+}

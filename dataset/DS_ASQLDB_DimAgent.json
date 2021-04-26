@@ -1,0 +1,45 @@
+{
+	"name": "DS_ASQLDB_DimAgent",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQLDB_DestionDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SCD_key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AgentID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AgentName",
+				"type": "varchar"
+			},
+			{
+				"name": "Designation",
+				"type": "varchar"
+			},
+			{
+				"name": "ContactNo",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Location",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Dim_AgentSCDTYpe2"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

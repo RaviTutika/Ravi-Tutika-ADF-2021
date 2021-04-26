@@ -1,0 +1,36 @@
+{
+	"name": "PL-Lift_ShiftDemos",
+	"properties": {
+		"activities": [
+			{
+				"name": "Stored procedure - Lift Shift",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "sp_ExecuteSQL ",
+					"storedProcedureParameters": {
+						"statement": {
+							"value": "Declare @execution_id bigint\nEXEC [SSISDB].[catalog].[create_execution] @package_name=N'Package.dtsx', @execution_id=@execution_id OUTPUT, @folder_name=N'Azure_SSIS', @project_name=N'Azure_SSIS', @use32bitruntime=False, @reference_id=Null, @useanyworker=True, @runinscaleout=True\nSelect @execution_id\nDECLARE @var0 smallint = 1\nEXEC [SSISDB].[catalog].[set_execution_parameter_value] @execution_id,  @object_type=50, @parameter_name=N'LOGGING_LEVEL', @parameter_value=@var0\nEXEC [SSISDB].[catalog].[start_execution] @execution_id,  @retry_count=0",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SSIS_DB",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-04-16T11:58:06Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

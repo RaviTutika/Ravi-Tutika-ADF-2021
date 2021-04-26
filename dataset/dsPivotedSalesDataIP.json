@@ -1,0 +1,38 @@
+{
+	"name": "dsPivotedSalesDataIP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureBlobStorage_AdfDemos",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "PivotedSa1lesDataOP.csv",
+				"folderPath": "output",
+				"container": "adffiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Item Type",
+				"type": "String"
+			},
+			{
+				"name": "Offline",
+				"type": "String"
+			},
+			{
+				"name": "Online",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

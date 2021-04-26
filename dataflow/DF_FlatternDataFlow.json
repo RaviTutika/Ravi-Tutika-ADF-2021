@@ -1,0 +1,32 @@
+{
+	"name": "DF_FlatternDataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsSatelineDatasetJson",
+						"type": "DatasetReference"
+					},
+					"name": "SateliteData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsSatelinedataJson",
+						"type": "DatasetReference"
+					},
+					"name": "destinationSateliteData"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FlattenSateliteData"
+				}
+			],
+			"script": "source(output(\n\t\tgoods as (customers as string[], orders as (orderId as short, orderTotal as double, shipped as (orderItems as (itemName as string, itemQty as short)[]))[], trade as boolean),\n\t\tlocation as string,\n\t\tname as string,\n\t\tsatellites as string[]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'arrayOfDocuments') ~> SateliteData\nSateliteData foldDown(unroll(goods.customers),\n\tmapColumn(\n\t\tcustomers = goods.customers,\n\t\torders = goods.orders,\n\t\ttrade = goods.trade\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> FlattenSateliteData\nFlattenSateliteData sink(input(\n\t\tGender as string,\n\t\t{Total Children} as string,\n\t\t{Total Income} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['destinationSateliteData.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> destinationSateliteData"
+		}
+	}
+}

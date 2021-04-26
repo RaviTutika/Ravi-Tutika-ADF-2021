@@ -1,0 +1,32 @@
+{
+	"name": "DL_DerivedColumn",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_Hospital_AdmissionData",
+						"type": "DatasetReference"
+					},
+					"name": "HospitalAdmissionData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_HospitalAdmissionDFOp",
+						"type": "DatasetReference"
+					},
+					"name": "HospitalAdmissionDataWithDerivedColumn"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumnLoadDate"
+				}
+			],
+			"script": "source(output(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HospitalAdmissionData\nHospitalAdmissionData derive(LoadDate = currentDate()) ~> DerivedColumnLoadDate\nDerivedColumnLoadDate sink(input(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['HospitalAdmissionDataLoadDate.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> HospitalAdmissionDataWithDerivedColumn"
+		}
+	}
+}

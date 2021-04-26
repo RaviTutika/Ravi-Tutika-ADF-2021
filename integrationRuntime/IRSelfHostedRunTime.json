@@ -1,0 +1,6 @@
+{
+	"name": "IRSelfHostedRunTime",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

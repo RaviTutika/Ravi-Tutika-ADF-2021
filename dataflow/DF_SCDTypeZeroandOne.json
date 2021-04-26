@@ -1,0 +1,52 @@
+{
+	"name": "DF_SCDTypeZeroandOne",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_AgentDataSource",
+						"type": "DatasetReference"
+					},
+					"name": "AgentDataSourceADLS"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_ASQLDB_DimAgent",
+						"type": "DatasetReference"
+					},
+					"name": "RefTargetTable"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_ASQLDB_DimAgent",
+						"type": "DatasetReference"
+					},
+					"name": "DimAgentSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_ASQLDB_DimAgent",
+						"type": "DatasetReference"
+					},
+					"name": "DimAgentSinkInsert"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Join"
+				},
+				{
+					"name": "ConditionalSplit"
+				},
+				{
+					"name": "AlterRowUpdateRecords"
+				}
+			],
+			"script": "source(output(\n\t\tID as integer,\n\t\tName as string,\n\t\tRole as string,\n\t\t{Mobile No} as long,\n\t\tWorkLocation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> AgentDataSourceADLS\nsource(output(\n\t\tSCD_key as integer,\n\t\tAgentID as integer,\n\t\tAgentName as string,\n\t\tDesignation as string,\n\t\tContactNo as long,\n\t\tLocation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> RefTargetTable\nAgentDataSourceADLS, RefTargetTable join(ID == AgentID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join\nJoin split(ID==AgentID,\n\tdisjoint: false) ~> ConditionalSplit@(Matching, NotMatching)\nConditionalSplit@Matching alterRow(updateIf(1==1)) ~> AlterRowUpdateRecords\nAlterRowUpdateRecords sink(input(\n\t\tSCD_key as integer,\n\t\tAgentID as integer,\n\t\tAgentName as string,\n\t\tDesignation as string,\n\t\tContactNo as long,\n\t\tLocation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['AgentID'],\n\tformat: 'table',\n\tmapColumn(\n\t\tAgentID,\n\t\tContactNo = {Mobile No},\n\t\tLocation = WorkLocation\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DimAgentSink\nConditionalSplit@NotMatching sink(input(\n\t\tSCD_key as integer,\n\t\tAgentID as integer,\n\t\tAgentName as string,\n\t\tDesignation as string,\n\t\tContactNo as long,\n\t\tLocation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAgentID = ID,\n\t\tAgentName = Name,\n\t\tDesignation = Role,\n\t\tContactNo = {Mobile No},\n\t\tLocation = WorkLocation\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DimAgentSinkInsert"
+		}
+	}
+}

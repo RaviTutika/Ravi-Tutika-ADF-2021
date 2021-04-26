@@ -1,0 +1,91 @@
+{
+	"name": "DF_SCDType2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_AgentDataSource",
+						"type": "DatasetReference"
+					},
+					"name": "AgentDataSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_AZSQLDB_Agent",
+						"type": "DatasetReference"
+					},
+					"name": "MaxKey"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_AZSQLDB_Agent",
+						"type": "DatasetReference"
+					},
+					"name": "DimAgentRefData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_AZSQLDB_Agent",
+						"type": "DatasetReference"
+					},
+					"name": "DimAgentDirectInsert"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_ASQLDB_DimAgent",
+						"type": "DatasetReference"
+					},
+					"name": "UpdateSinkAgentData"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_ASQLDB_DimAgent",
+						"type": "DatasetReference"
+					},
+					"name": "SinkDimAgentAllLoad"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_AZSQLDB_Agent",
+						"type": "DatasetReference"
+					},
+					"name": "DimAgentHistoryUpdate"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Select"
+				},
+				{
+					"name": "CrossJoinwithMaxKey"
+				},
+				{
+					"name": "LefJoinWithDimAgentData"
+				},
+				{
+					"name": "ConditionalSplit"
+				},
+				{
+					"name": "JoinDesiganation"
+				},
+				{
+					"name": "ConditionalSplitByDesignation"
+				},
+				{
+					"name": "AlterRowUpdate"
+				},
+				{
+					"name": "DerivedColumnForIsActiveAndEnDate"
+				},
+				{
+					"name": "AlterRowHistory"
+				}
+			],
+			"script": "source(output(\n\t\tID as integer,\n\t\tName as string,\n\t\tRole as string,\n\t\t{Mobile No} as long,\n\t\tWorkLocation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> AgentDataSource\nsource(output(\n\t\tMax_Key as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT MAX(SCD_key) AS [Max_Key] FROM Dim_AgentSCDTYpe2',\n\tformat: 'query') ~> MaxKey\nsource(output(\n\t\tSCD_key as integer,\n\t\tAgentID as integer,\n\t\tAgentName as string,\n\t\tDesignation as string,\n\t\tContactNo as long,\n\t\tLocation as string,\n\t\tISActive as integer,\n\t\tFromDate as date,\n\t\tToDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DimAgentRefData\nAgentDataSource select(mapColumn(\n\t\tsrc_AgentID = ID,\n\t\tscr_Name = Name,\n\t\tsrc_Role = Role,\n\t\t{src_Mobile No} = {Mobile No},\n\t\tsrc_WorkLocation = WorkLocation\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select\nSelect, MaxKey join(1==1,\n\tjoinType:'cross',\n\tbroadcast: 'auto')~> CrossJoinwithMaxKey\nCrossJoinwithMaxKey, DimAgentRefData join(src_AgentID == AgentID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> LefJoinWithDimAgentData\nLefJoinWithDimAgentData split(src_AgentID==AgentID,\n\tdisjoint: false) ~> ConditionalSplit@(Matching, UnMatched)\nConditionalSplit@Matching, DimAgentRefData join(src_Role == DimAgentRefData@Designation,\n\tjoinType:'left',\n\tbroadcast: 'right')~> JoinDesiganation\nJoinDesiganation split(src_Role==ConditionalSplit@Matching@Designation,\n\tdisjoint: false) ~> ConditionalSplitByDesignation@(DesignationMatching, NotMatched)\nConditionalSplitByDesignation@DesignationMatching alterRow(updateIf(1==1)) ~> AlterRowUpdate\nConditionalSplitByDesignation@NotMatched derive(IsActive = 0,\n\t\tEndDate = currentDate()) ~> DerivedColumnForIsActiveAndEnDate\nDerivedColumnForIsActiveAndEnDate alterRow(updateIf(ConditionalSplitByDesignation@NotMatched@SCD_key<=Max_Key)) ~> AlterRowHistory\nConditionalSplit@UnMatched sink(input(\n\t\tSCD_key as integer,\n\t\tAgentID as integer,\n\t\tAgentName as string,\n\t\tDesignation as string,\n\t\tContactNo as long,\n\t\tLocation as string,\n\t\tISActive as integer,\n\t\tFromDate as date,\n\t\tToDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAgentID = src_AgentID,\n\t\tAgentName = scr_Name,\n\t\tDesignation = src_Role,\n\t\tContactNo = {src_Mobile No},\n\t\tLocation = src_WorkLocation\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DimAgentDirectInsert\nAlterRowUpdate sink(input(\n\t\tSCD_key as integer,\n\t\tAgentID as integer,\n\t\tAgentName as string,\n\t\tDesignation as string,\n\t\tContactNo as long,\n\t\tLocation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['AgentID'],\n\tformat: 'table',\n\tmapColumn(\n\t\tAgentID = src_AgentID,\n\t\tContactNo = {src_Mobile No},\n\t\tLocation = src_WorkLocation\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> UpdateSinkAgentData\nConditionalSplitByDesignation@NotMatched sink(input(\n\t\tSCD_key as integer,\n\t\tAgentID as integer,\n\t\tAgentName as string,\n\t\tDesignation as string,\n\t\tContactNo as long,\n\t\tLocation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAgentID = src_AgentID,\n\t\tAgentName = scr_Name,\n\t\tDesignation = src_Role,\n\t\tContactNo = {src_Mobile No},\n\t\tLocation = src_WorkLocation\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> SinkDimAgentAllLoad\nAlterRowHistory sink(input(\n\t\tSCD_key as integer,\n\t\tAgentID as integer,\n\t\tAgentName as string,\n\t\tDesignation as string,\n\t\tContactNo as long,\n\t\tLocation as string,\n\t\tISActive as integer,\n\t\tFromDate as date,\n\t\tToDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['AgentID'],\n\tformat: 'table',\n\tmapColumn(\n\t\tAgentID = src_AgentID,\n\t\tISActive = IsActive,\n\t\tToDate = EndDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DimAgentHistoryUpdate"
+		}
+	}
+}

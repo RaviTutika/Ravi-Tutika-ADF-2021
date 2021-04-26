@@ -1,0 +1,63 @@
+{
+	"name": "PL_CopyDimAccountData",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyDimAccountData_OnPremise_To_Blob",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "/****** Script for SelectTopNRows command from SSMS  ******/\nSELECT [AccountKey]\n      ,[AccountDescription]\n      ,[AccountType]\n      ,[Operator]\n      ,[CustomMembers]\n      ,[ValueType]\n      ,[CustomMemberOptions]\n  FROM [AdventureWorksDW2017].[dbo].[DimAccount]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_DimAccountSourceDataset",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_OutputHospitalAdmissionData",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-04-10T20:43:22Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

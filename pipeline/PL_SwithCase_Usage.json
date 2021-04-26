@@ -1,0 +1,65 @@
+{
+	"name": "PL_SwithCase_Usage",
+	"properties": {
+		"activities": [
+			{
+				"name": "Switch - Action",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.Action",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "Copy",
+							"activities": [
+								{
+									"name": "Execute Pipeline - Copy",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "PL_Lookup_CopyData",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true
+									}
+								}
+							]
+						},
+						{
+							"value": "Delete",
+							"activities": [
+								{
+									"name": "Execute Pipeline - Delete Contents",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "PL_DeleteContentsFolder",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"Action": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-04-13T00:43:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,228 @@
+{
+	"name": "PL_Student_IncrementLoad",
+	"properties": {
+		"activities": [
+			{
+				"name": "LookupOldWaterMark",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT waterMarkVal\nFROM [dbo].[WaterMark]\nWHERE tableName = '@{pipeline().parameters.finalTableName}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_AZSQLWaterMark",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "LookupNewWaterMark",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT MAX(@{pipeline().parameters.waterMarkCol}) AS NewwaterMarkVal\nFROM @{pipeline().parameters.srcTableName}",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_AZSQLWaterMark",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "CopyToStaging",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "LookupOldWaterMark",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "LookupNewWaterMark",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "select * from @{pipeline().parameters.srcTableName}\nwhere @{pipeline().parameters.waterMarkCol} > \n'@{activity('lookupOldWaterMark').output.firstRow.waterMarkVal}' \nand @{pipeline().parameters.waterMarkCol} <= \n'@{activity('lookupNewWaterMark').output.firstRow.NewwaterMarkVal}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": {
+							"value": "TRUNCATE TABLE @{pipeline().parameters.stgTableName}",
+							"type": "Expression"
+						},
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SourceStudent",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_AZSQLDB_DestionDB",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Upsert Student",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CopyToStaging",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_upsert_Student]"
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQLServerOnPremiseStudent",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Upsert WaterMark",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Upsert Student",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_write_watermark]",
+					"storedProcedureParameters": {
+						"LastModifiedtime": {
+							"value": {
+								"value": "@activity('LookupNewWaterMark').output.firstRow.NewwaterMarkVal)",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"TableName": {
+							"value": {
+								"value": "@pipeline().parameters.finalTableName",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AZSQLDB_DestionDB",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"finalTableName": {
+				"type": "string",
+				"defaultValue": "Student"
+			},
+			"srcTableName": {
+				"type": "string",
+				"defaultValue": "Student"
+			},
+			"waterMarkCol": {
+				"type": "string",
+				"defaultValue": "stgTableName"
+			},
+			"storedProcUpsert": {
+				"type": "string",
+				"defaultValue": "usp_upsert_Student"
+			},
+			"stgTableName": {
+				"type": "string",
+				"defaultValue": "stgStudent"
+			},
+			"storedProcWaterMark": {
+				"type": "string",
+				"defaultValue": "usp_update_WaterMark"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-04-24T18:06:32Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

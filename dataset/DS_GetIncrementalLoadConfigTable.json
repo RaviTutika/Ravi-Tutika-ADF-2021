@@ -1,0 +1,34 @@
+{
+	"name": "DS_GetIncrementalLoadConfigTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQLServerSourceDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "TABLE_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "ConfigColumn",
+				"type": "varchar"
+			},
+			{
+				"name": "TableType",
+				"type": "varchar"
+			},
+			{
+				"name": "StoreProcedureNameMergeOperation",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "IncrementalConfigurationTable"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

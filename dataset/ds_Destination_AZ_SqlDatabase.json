@@ -1,0 +1,17 @@
+{
+	"name": "ds_Destination_AZ_SqlDatabase",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZ_SQL_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HighSchoolData"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

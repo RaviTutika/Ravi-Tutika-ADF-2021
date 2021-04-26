@@ -1,0 +1,32 @@
+{
+	"name": "DF_UnPivotTransformation_ErrorHandling",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsPivotedSalesDataIP",
+						"type": "DatasetReference"
+					},
+					"name": "SalesPivotedData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsHighSchoolDataOP",
+						"type": "DatasetReference"
+					},
+					"name": "UnPivotedSalesData"
+				}
+			],
+			"transformations": [
+				{
+					"name": "UnpivotPivotedSalesData"
+				}
+			],
+			"script": "source(output(\n\t\t{Item Type} as string,\n\t\tOffline as double,\n\t\tOnline as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SalesPivotedData\nSalesPivotedData unpivot(output(\n\t\t{Sales Channel} as string,\n\t\tRevenue as double\n\t),\n\tungroupBy({Item Type}),\n\tlateral: true,\n\tignoreNullPivots: false) ~> UnpivotPivotedSalesData\nUnpivotPivotedSalesData sink(input(\n\t\tcountry as string,\n\t\tindicator as string,\n\t\tdate as string,\n\t\tyear_week as string,\n\t\tvalue as string,\n\t\tsource as string,\n\t\turl as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['UnPivotedSalesData.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UnPivotedSalesData"
+		}
+	}
+}
