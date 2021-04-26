@@ -1,0 +1,296 @@
+Introduction : 
+
+-> Managing data is a critical component of any business. Relational databases, and specifically Microsoft SQL      Server, have been among the most common tools for handling that data for decades.
+
+-> If we want to manage our data using the cloud, we can just use Azure virtual machines to host our own Microsoft SQL Server instances. Sometimes that's the right solution, but Azure offers another way that is often much easier and more cost effective. Azure SQL databases are a Platform-as-a-Service (PaaS) offering, meaning much less infrastructure and maintenance to manage yourself.
+
+-> To understand better, let's consider a scenario: you're a software development lead at a transportation logistics company, Contoso Transport.
+
+-> The transportation industry requires tight coordination among everyone involved: schedulers, dispatchers, drivers, and even customers.
+
+-> Your current process involves piles of paper forms and hours on the phone to coordinate shipments. You find that paperwork is often missing signatures and dispatchers are frequently unavailable. These holdups leave drivers sitting idle; and as a result, some important shipments arrive late.
+
+-> Customer satisfaction and repeat business are crucial to your bottom line, so your team decides to move from paper forms and phone calls to digital documents and online communication. Going digital will enable everyone to coordinate and track shipment times through their web browser or mobile app.
+
+-> You want to quickly prototype something to share with your team. Your prototype will include a database to hold driver, customer, and order information. Your prototype will be the basis for your production app, so the technology choices you make now should carry over to what your team delivers.
+
+-> Azure provides Platform as a Service (PaaS) services to help you manage all kinds of data, from highly structured relational data to unstructured data.
+
+Why choose Azure SQL Database? 
+
+-> Your transportation logistics application requires stored procedures that run basic CRUD (Create, Read, Update, and Delete) operations. You have experience working with SQL Server and other relational databases.
+
+-> You consider two choices for your database:
+
+Host SQL Server on-premises. Your IT team runs a small in-house data center to support the finance department and a few other teams. You can work with IT to host a SQL Server deployment in their data center.
+
+Host Azure SQL Database in the cloud. Azure SQL Database is based on SQL Server and provides the relational database functionality you need.
+
+-> You've decided to build the web and application tiers for your logistics app on Azure. So it makes sense to also host your database there. But there are some other reasons why Azure SQL Database is a smart choice, and why it's even easier than using virtual machines.
+
+Convenience : 
+
+-> Setting up SQL Server on a VM or on physical hardware requires you to know about hardware and software requirements. You'll need to understand the latest security best practices and manage operating system and SQL Server patches on a routine basis. You also need to manage backup and data retention issues yourself.
+
+-> With Azure SQL Database, we manage the hardware, software updates, and OS patches for you. All you specify is the name of your database and a few options. You'll have a running SQL database in minutes.
+
+-> You can bring up and tear down Azure SQL Database instances at your convenience. Azure SQL Database comes up fast and is easy to configure. You can focus less on configuring software and more on making your app great.
+
+Cost : 
+
+-> Because we manage things for you, there are no systems for you to buy, provide power for, or otherwise maintain.
+
+-> Azure SQL Database has several pricing options. These pricing options enable you to balance performance versus cost. You can start for just a few dollars a month.
+
+Scale : 
+
+-> You find that the amount of transportation logistics data you must store doubles every year. When running on-premises, how much excess capacity should you plan for?
+
+-> With Azure SQL Database, you can adjust the performance and size of your database on the fly when your needs change.
+
+Security : 
+
+-> Azure SQL Database comes with a firewall that's automatically configured to restrict connections from the Internet.
+
+-> You can allow access to specific IP addresses that you trust. Doing so allows you to use Visual Studio, SQL Server Management Studio, or other tools to manage your Azure SQL database.
+
+==================================================================================================
+
+-> Your transportation company wants to set itself apart from other companies, without breaking the bank. You must have a good handle on how to set up the database to provide the best service while controlling costs.
+
+One server, many databases : 
+
+-> When you create your first Azure SQL database, you also create an Azure SQL logical server. Think of a logical server as an administrative container for your databases. You can control logins, firewall rules, and security policies through the logical server. You can also override these policies on each database within the logical server.
+
+-> For now, you need just one database. But a logical server enables you to add more later and tune performance among all your databases.
+
+Choose performance: DTUs versus vCores 
+
+-> Azure SQL Database has two purchasing models: DTU and vCore.
+
+What are DTUs? : 
+
+-> DTU stands for Database Transaction Unit, and is a combined measure of compute, storage, and IO resources. Think of the DTU model as a simple, preconfigured purchase option.
+
+-> Because your logical server can hold more than one database, there's also the idea of eDTUs, or elastic Database Transaction Units. This option enables you to choose one price, but allow each database in the pool to consume fewer or greater resources depending on current load.
+
+What are vCores? : 
+
+-> vCores are Virtual cores, which give you greater control over the compute and storage resources that you create and pay for.
+
+-> While the DTU model provides fixed combinations of compute, storage, and IO resources, the vCore model enables you to configure resources independently. For example, with the vCore model you can increase storage capacity but keep the existing amount of compute and IO throughput.
+
+-> Your transportation and logistics prototype only needs one Azure SQL Database instance. You decide on the DTU option because it provides a good balance of compute, storage, and IO performance and is less expensive to get started.
+
+What are SQL elastic pools : 
+
+-> When you create your Azure SQL database, you can create a SQL elastic pool.
+
+-> SQL elastic pools relate to eDTUs. They enable you to buy a set of compute and storage resources that are shared among all the databases in the pool. Each database can use the resources they need, within the limits you set, depending on current load.
+
+-> For your prototype, you won't need a SQL elastic pool because you need only one SQL database.
+
+What is collation : 
+
+-> Collation refers to the rules that sort and compare data. Collation helps you define sorting rules when case sensitivity, accent marks, and other language characteristics are important.
+
+-> Let's take a moment to consider what the default collation, SQL_Latin1_General_CP1_CI_AS, means.
+
+-> Latin1_General refers to the family of Western European languages.
+-> CP1 refers to code page 1252, a popular character encoding of the Latin alphabet.
+-> CI means that comparisons are case insensitive. For example, "HELLO" compares equally to "hello".
+-> AS means that comparisons are accent sensitive. For example, "résumé" doesn't compare equally to "resume".
+
+-> Because you don't have specific requirements around how data is sorted and compared, you choose the default collation.
+
+Create your Azure SQL database : 
+
+-> Here you'll set up your database, which includes creating your logical server. You'll choose settings that support your transportation logistics application. In practice, you would choose settings that support the kind of app you're building.
+
+-> Over time if you realize you need additional compute power to keep up with demand, you can adjust performance options or even switch between the DTU and vCore performance models.
+
+-> Sign into the Azure portal using the same account you activated the sandbox with.
+
+-> From the Azure portal menu or the Home page, select Create a resource. Select Databases, then select SQL Database. The Create SQL Database page appears.
+
+-> Use these values to fill out the rest of the form.
+
+Setting	Value 
+On the Basics tab, under Project details:	
+Subscription	Concierge Subscription
+Resource group	learn-ff4f2a76-cfa4-4f2d-9341-427755fe40fe
+Under the Database details section:	
+Database name	Logistics
+Server	[See step 4]
+Want to use SQL elastic pool?	No
+Compute + storage	[See step 5]
+
+-> Under Server, select Create new. The New Server panel appears. Fill out the settings using information from the following table.
+
+Server name	A globally unique server name.
+Server admin login	A database identifier that serves as your primary administrator login name.
+Password	Any valid password that has at least eight characters and contains characters from three of these categories: uppercase characters, lowercase characters, numbers, and non-alphanumeric characters.
+Location	Any valid location from the dropdown.
+
+-> Under Compute + storage, select Configure database, and then perform the following steps:
+
+     a) To configure your database to use DTUs, select Looking for basic, standard, premium?
+
+     b) Depending on your application needs, select Basic, Standard, or Premium.
+
+     c) Select Apply.
+	 
+-> Select the Additional settings tab, and then use these values to fill out the settings.
+
+Setting	Value 
+Data source section > Use existing data	None
+Database Collation section > Collation	SQL_Latin1_General_CP1_CI_AS
+Azure Defender for SQL section > Enable Azure Defender for SQL	Not now
+
+-> Select Review + create, and then select Create to create your Azure SQL database.
+
+-> On the toolbar, select Notifications to monitor the deployment process.
+
+-> When the process completes, select Pin to dashboard to pin your database server to the dashboard so that you have quick access when you need it later.
+
+
+Set the server firewall : 
+
+-> Your Azure SQL database is now up and running. You have many options to further configure, secure, monitor, and troubleshoot your new database. You can also specify which systems can access your database through the firewall. Initially, the firewall prevents all access to your database server from outside of Azure.
+
+-> For your prototype, you only need to access the database from your laptop. Later, you can add additional systems, such as your mobile app.
+
+-> For now, let's enable your development computer to access the database through the firewall.
+
+-> Go to the overview pane of the Logistics database. If you pinned the database earlier, you can select the Logistics tile on the dashboard to get there.
+
+-> Select Set server firewall. The Firewall settings page appears.
+
+-> Select + Add client IP. This action automatically adds the IP address for your development computer and Select Save.
+
+
+Connect to your database and add sample data : 
+
+-> Before you connect the database to your app, you want to verify that you can connect to it, add a basic table, and work with sample data.
+
+-> We maintain the infrastructure, software updates, and patches for your Azure SQL database. Beyond that, you can treat your Azure SQL database like you would any other SQL Server installation. For example, you can use Visual Studio, SQL Server Management Studio, Azure Data Studio, or other tools to manage your Azure SQL database.
+
+-> How you access your database and connect it to your app is up to you. But to get some experience working with your database, here you'll connect to it directly from the portal, create a table, and run a few basic CRUD operations. You'll learn:
+
+-> How you access your database and connect it to your app is up to you. But to get some experience working with your database, here you'll connect to it directly from the portal, create a table, and run a few basic CRUD operations.
+
+What is Azure Cloud Shell : 
+
+-> Azure Cloud Shell is a browser-based shell experience to manage and develop Azure resources. Think of Cloud Shell as an interactive console that runs in the cloud.
+
+-> Behind the scenes, Cloud Shell runs on Linux. But depending on whether you prefer a Linux or Windows environment, you have two experiences to choose from: Bash and PowerShell.
+
+-> Cloud Shell is accessible from anywhere. Besides the portal, you can also access Cloud Shell from shell.azure.com, the Azure mobile app, or from Visual Studio Code. The panel on the right is a Cloud Shell terminal for you to use during this exercise.
+
+-> Cloud Shell includes popular tools and text editors. Here's a brief look at the az, jq, and sqlcmd utilities, which are three tools that you'll use for this exercise.
+
+	a)	az is also known as the Azure CLI. It's the command-line interface for working with Azure resources. You'll use this to get information about your database, including the connection string.
+   b) jq is a command-line JSON parser. You'll pipe output from az commands to this tool to extract important fields from JSON output.
+   c) sqlcmd enables you to execute statements on SQL Server. You'll use sqlcmd to create an interactive session with your Azure SQL database.
+   
+Get information about your Azure SQL database :
+ 
+-> Before you connect to your database, it's a good idea to verify that it exists and is online.
+
+-> Here, you use the az utility to list your databases and show some information about the Logistics database, including its maximum size and status.
+
+-> The az commands you'll run require the name of your resource group and the name of your Azure SQL logical server. To save typing, run this azure configure command to specify them as default values.
+
+az configure --defaults group=learn-ff4f2a76-cfa4-4f2d-9341-427755fe40fe sql-server=[logistics108.database.windows.net] 
+
+-> Run az sql db list to list all databases on your Azure SQL logical server. You see a large block of JSON as output.
+
+-> Because we want to see only the database names, run the command a second time. But this time, pipe the output to jq to print out only the name fields.
+
+az sql db list | jq '[.[] | {name: .name}]'
+
+-> Logistics is your database. Like SQL Server, master includes server metadata, such as sign-in accounts and system configuration settings.
+
+-> Run this az sql db show command to get details about the Logistics database. As before, you see a large block of JSON as output.
+
+az sql db show --name Logistics
+
+-> Run the command a second time. This time, pipe the output to jq to limit output to only the name, maximum size, and status of the Logistics database.
+
+az sql db show --name Logistics | jq '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'
+
+Connect to your database : 
+
+-> Now that you understand a bit about your database, let's connect to it using sqlcmd, create a table that holds information about transportation drivers, and perform a few basic CRUD operations.
+
+-> Remember that CRUD stands for Create, Read, Update, and Delete. These terms refer to operations you perform on table data and are the four basic operations you need for your app. Now's a good time to verify you can perform each of them.
+
+-> Run this az sql db show-connection-string command to get the connection string to the Logistics database in a format that sqlcmd can use.
+
+-> Run the sqlcmd statement from the output of the previous step to create an interactive session. Remove the surrounding quotes and replace <username> and <password> with the username and password you specified when you created your database. Here's an example.
+
+Summary  : 
+
+-> Now that your Azure SQL database is up and running, you can connect it to your favorite SQL Server management tool to populate it with real data.
+
+-> You initially considered whether to run your database on-premises or in the cloud. With Azure SQL Database, you configure a few basic options and you have a fully functional SQL database that you can connect to your apps.
+
+-> There's no infrastructure or software patches to maintain. You're now free to focus more on getting your transportation logistics app prototype up and running and less on database administration. Your prototype won't be a throw-away demo, either. Azure SQL Database provides production-level security and performance features.
+
+-> Remember that each Azure SQL logical server contains one or more databases. Azure SQL Database provides two pricing models, DTU and vCore, to help you balance cost versus performance across all your databases.
+
+-> Choose DTU if you're just getting started or want a simple, preconfigured buying option. Choose vCore when you want greater control over what compute and storage resources you create and pay for.
+
+-> Azure Cloud Shell makes it easy to start working with your databases. From Cloud Shell, you have access to the Azure CLI, which enables you to get information about your Azure resources. Cloud Shell also provides many other common utilities, such as sqlcmd, to help you start working right away with your new database.
+
+=================================================================================================
+
+Migrate your relational data stored in SQL Server to Azure SQL Database : 
+
+Introduction : 
+
+-> Azure Database Migration Service automates the task of migrating your databases to the Azure SQL Database service.
+
+-> Suppose you work for a company that aggregates social media links to provide recommendations to users of its website. The current infrastructure is having problems scaling up to handle the current demands. In addition, the infrastructure is becoming more expensive to maintain as the equipment ages.
+
+-> The company's SQL Server database is hosted in a Windows virtual machine in Azure. To save costs and to provide a platform for rapid growth in the future, management has decided to migrate that database to Azure SQL Database. As the IT resource in charge of the database, you're tasked with the migration.
+
+
+Environment setup: 
+
+-> you lay the groundwork for using Data Migration Assistant. You use the Azure portal to deploy a template that will create resources.
+
+-> This deployment will create the following resources:
+
+A resource group.
+A SQL Server instance.
+An empty Azure SQL database.
+A virtual machine running SQL Server.
+Network and storage resources to support the previous items.
+
+Deploy the template : 
+
+-> To open the Azure portal and deploy the resources needed for the exercises, select Deploy to Azure.
+
+
+
+-> Complete the Custom deployment template with the following values.
+
+Field	Value
+Basics tab > Deployment scope section	
+Subscription	Select the Azure subscription that you want to use.
+Resource group	Select Create new, enter admsdemorg, and select OK.
+Parameters section	
+Region	Select a location that supports the Azure Database Migration Service.
+Source Windows Admin User Name	windowsadmin
+Source Windows Admin Password	Enter a complex password
+Source Sql Admin User Name	sqladmin
+Source Sql Admin Password	Enter a complex password
+Target Sql Db Administrator Login	azuresqladmin
+Target Sql Db Administrator Password	Enter a complex password
+
+-> Select Review + create.
+
+-> Upon receiving Validation Passed notification, select Create.
+
+-> Make note of the passwords that you used for the accounts, because you'll use them later. This deployment will take 10 to 15 minutes. 
