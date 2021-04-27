@@ -1,0 +1,33 @@
+{
+	"name": "DS_ErrorHandlingData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQLDB_DestionDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "varchar"
+			},
+			{
+				"name": "CustomerName",
+				"type": "varchar"
+			},
+			{
+				"name": "SalesAmount",
+				"type": "varchar"
+			},
+			{
+				"name": "Paytype",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ErroroadHandlingError"
+		}
+	}
+}

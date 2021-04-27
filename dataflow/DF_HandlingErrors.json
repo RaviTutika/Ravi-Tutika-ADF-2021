@@ -19,6 +19,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "DestinationHandlingErrorData"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_ErrorHandlingData",
+						"type": "DatasetReference"
+					},
+					"name": "ErrorLoadData"
 				}
 			],
 			"transformations": [
@@ -26,7 +33,7 @@
 					"name": "ConditionalSplitErrorBase"
 				}
 			],
-			"script": "source(output(\n\t\tID as integer,\n\t\tName as string,\n\t\tSalesAmount as integer,\n\t\tPayType as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HandlingErrorsData\nHandlingErrorsData split(isNull(toInteger(ID)) || isNull(toInteger(SalesAmount)) || isNull(toString(Name)) || length(PayType) > 4,\n\tdisjoint: false) ~> ConditionalSplitErrorBase@(Error, NoError)\nConditionalSplitErrorBase@NoError sink(input(\n\t\tID as integer,\n\t\tCustomerName as string,\n\t\tSalesAmount as integer,\n\t\tPaytype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tID,\n\t\tCustomerName = Name,\n\t\tSalesAmount,\n\t\tPaytype = PayType\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DestinationHandlingErrorData"
+			"script": "source(output(\n\t\tID as integer,\n\t\tName as string,\n\t\tSalesAmount as integer,\n\t\tPayType as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> HandlingErrorsData\nHandlingErrorsData split(isNull(toInteger(ID)) || isNull(toInteger(SalesAmount)) || isNull(toString(Name)) || length(PayType) > 4,\n\tdisjoint: false) ~> ConditionalSplitErrorBase@(Error, NoError)\nConditionalSplitErrorBase@NoError sink(input(\n\t\tID as integer,\n\t\tCustomerName as string,\n\t\tSalesAmount as integer,\n\t\tPaytype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tID,\n\t\tCustomerName = Name,\n\t\tSalesAmount,\n\t\tPaytype = PayType\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DestinationHandlingErrorData\nConditionalSplitErrorBase@Error sink(input(\n\t\tID as string,\n\t\tCustomerName as string,\n\t\tSalesAmount as string,\n\t\tPaytype as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> ErrorLoadData"
 		}
 	}
 }
