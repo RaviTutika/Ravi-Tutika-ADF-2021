@@ -1,0 +1,32 @@
+{
+	"name": "DS_FoldersNamesData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureBlobStorage_AdfDemos",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "LookUpMetadata.txt",
+				"container": "adffiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "soureFolder",
+				"type": "String"
+			},
+			{
+				"name": "DestinationFolder",
+				"type": "String"
+			}
+		]
+	}
+}
