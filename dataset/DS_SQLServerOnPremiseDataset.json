@@ -1,0 +1,12 @@
+{
+	"name": "DS_SQLServerOnPremiseDataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SqlServerAdventureWorksDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}

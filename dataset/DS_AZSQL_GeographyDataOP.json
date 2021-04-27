@@ -1,0 +1,16 @@
+{
+	"name": "DS_AZSQL_GeographyDataOP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQLDB_DestionDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Address"
+		}
+	}
+}
