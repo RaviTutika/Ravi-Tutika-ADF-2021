@@ -1,0 +1,35 @@
+{
+	"name": "DS_HandlingErrorDataDestionationDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQLDB_DestionDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CustomerName",
+				"type": "varchar"
+			},
+			{
+				"name": "SalesAmount",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Paytype",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TargetLoadHandlingError"
+		}
+	}
+}
