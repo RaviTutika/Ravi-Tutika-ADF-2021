@@ -1,9 +1,9 @@
 {
 	"name": "datafactorylearning2021",
-	"location": "centralus",
+	"location": "eastus",
 	"identity": {
 		"type": "SystemAssigned",
-		"principalId": "657f66fc-9135-491b-9e61-bff621705c96",
-		"tenantId": "fcc4cb44-6495-4422-87fa-71162cafc55a"
+		"principalId": "f30446c6-afe9-4fe6-bb73-97ab85009f25",
+		"tenantId": "ddc07050-d04f-4a09-9389-b3b2e22244b0"
 	}
 }
