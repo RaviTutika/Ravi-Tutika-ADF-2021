@@ -2,7 +2,7 @@
 	"name": "DS_AZBLOB_CloudPandithSink",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "LS_AZBLOB_CloudPandtihSink",
+			"referenceName": "LS_cloudpandithdemosinkdem_Demos",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
