@@ -1,0 +1,20 @@
+{
+	"name": "DS_AZBLOB_CloudPandithSink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBLOB_CloudPandtihSink",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
