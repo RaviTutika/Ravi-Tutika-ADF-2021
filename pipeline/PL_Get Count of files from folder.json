@@ -46,6 +46,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup-GetConfigData').output.value",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "Get Metadata-ListChildItemsFromFolder",
