@@ -1,0 +1,32 @@
+{
+	"name": "DS_ConfigFileforMetdata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBLOB_CloudPandithSource",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Config.csv",
+				"container": "mainfolder"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "SourceFolder",
+				"type": "String"
+			},
+			{
+				"name": "SinkFolder",
+				"type": "String"
+			}
+		]
+	}
+}
