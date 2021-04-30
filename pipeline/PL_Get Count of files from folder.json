@@ -32,6 +32,56 @@
 					},
 					"firstRowOnly": false
 				}
+			},
+			{
+				"name": "ForEach-LoopThroughConfigFile",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup-GetConfigData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"activities": [
+						{
+							"name": "Get Metadata-ListChildItemsFromFolder",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DS_AZBlob_SourceCloudPath",
+									"type": "DatasetReference",
+									"parameters": {
+										"SourceFolder": {
+											"value": "@item().SourceFolder",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"annotations": []
