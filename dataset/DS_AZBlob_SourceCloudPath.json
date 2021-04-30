@@ -1,0 +1,30 @@
+{
+	"name": "DS_AZBlob_SourceCloudPath",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBLOB_CloudPandithSource",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SourceFolder": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": {
+					"value": "@dataset().SourceFolder",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

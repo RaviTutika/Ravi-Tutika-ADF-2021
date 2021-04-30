@@ -1,0 +1,30 @@
+{
+	"name": "DS_AZBlob_DestinationCloudPath",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_cloudpandithdemosinkdem_Demos",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"DestinationFolder": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": {
+					"value": "@dataset().DestinationFolder",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
