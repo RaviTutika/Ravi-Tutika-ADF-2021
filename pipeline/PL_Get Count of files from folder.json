@@ -100,7 +100,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@equals(length(activity('Get Metadata-ListChildItemsFromFolder').output.chidltems),'0')",
+									"value": "@equals(length(activity('Get Metadata-ListChildItemsFromFolder').output.childItems),'0')",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
