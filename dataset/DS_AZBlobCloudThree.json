@@ -1,0 +1,22 @@
+{
+	"name": "DS_AZBlobCloudThree",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AZ_AZBlob_CloudThree",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "demo"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

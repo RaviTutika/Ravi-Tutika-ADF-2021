@@ -1,0 +1,22 @@
+{
+	"name": "DS_AZBlobCloudeDemo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBlob_ClouldTwo",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "demo"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

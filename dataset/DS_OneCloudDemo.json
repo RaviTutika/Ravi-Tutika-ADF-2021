@@ -1,0 +1,31 @@
+{
+	"name": "DS_OneCloudDemo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBlob_StoraeOne",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "demo"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "SourceFolder",
+				"type": "String"
+			},
+			{
+				"name": "SinkFolder",
+				"type": "String"
+			}
+		]
+	}
+}
