@@ -1,0 +1,9 @@
+{
+	"name": "AZ-DataFactory-MasterProgram",
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "922d4f5a-66df-4f65-bd6d-f6bf265c16c5",
+		"tenantId": "ddc07050-d04f-4a09-9389-b3b2e22244b0"
+	}
+}
