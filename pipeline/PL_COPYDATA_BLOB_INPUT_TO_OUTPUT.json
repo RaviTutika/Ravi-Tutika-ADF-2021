@@ -1,0 +1,9 @@
+{
+	"name": "PL_COPYDATA_BLOB_INPUT_TO_OUTPUT",
+	"properties": {
+		"folder": {
+			"name": "Azure Data Factory Master Program - Pipelines"
+		},
+		"annotations": []
+	}
+}
