@@ -1,0 +1,24 @@
+{
+	"name": "PL_COPYDATA_CSVCONTAINER_JSON_CONTAINER_DYANMIC",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata -  CSB AND JSON CHILDITEMS",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
+			}
+		],
+		"folder": {
+			"name": "Azure Data Factory Master Program - Pipelines"
+		},
+		"annotations": []
+	}
+}
