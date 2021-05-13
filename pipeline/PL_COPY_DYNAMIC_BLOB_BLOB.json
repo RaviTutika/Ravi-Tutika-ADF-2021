@@ -1,0 +1,90 @@
+{
+	"name": "PL_COPY_DYNAMIC_BLOB_BLOB",
+	"properties": {
+		"activities": [
+			{
+				"name": "COPY DATA - DYNAMIC BLOB TO BLOB",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_AZBLOB_DYNAMIC_INPUT",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_Source_Container_Param": {
+								"value": "@pipeline().parameters.PL_Source_Container_Param",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_AZBLOB_DYNAMIC_OUTPUT",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_Sink_Container_Param": {
+								"value": "@pipeline().parameters.PL_Sink_Container_Param",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"PL_Source_Container_Param": {
+				"type": "string"
+			},
+			"PL_Sink_Container_Param": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Azure Data Factory Master Program - Pipelines"
+		},
+		"annotations": []
+	}
+}
