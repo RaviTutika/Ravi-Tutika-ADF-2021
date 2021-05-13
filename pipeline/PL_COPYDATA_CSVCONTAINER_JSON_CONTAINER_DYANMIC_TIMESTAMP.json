@@ -159,7 +159,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"ds_Sink_FileName_Param": {
-											"value": "@concat(item().name,formatDateTime(utcnow(),'yyyy_MM_DD'),'.csv')",
+											"value": "@concat(replace(item().name,'.csv',''), '_', formatDateTime(convertTimeZone(utcnow(),'UTC','Eastern Standard Time'),'yyyy-MM-ddTHHmmss'), '.csv')",
 											"type": "Expression"
 										}
 									}
@@ -250,7 +250,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"ds_Sink_FileName_Param": {
-											"value": "@item().name",
+											"value": "@concat(replace(item().name,'.json',''), '_', formatDateTime(convertTimeZone(utcnow(),'UTC','Eastern Standard Time'),'yyyy-MM-ddTHHmmss'), '.json')",
 											"type": "Expression"
 										}
 									}
