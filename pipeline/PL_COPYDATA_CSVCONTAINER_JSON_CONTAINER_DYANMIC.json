@@ -76,6 +76,62 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "FOR EACH LOOP-THROUGH CSV FILES",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FILTER - CSV FILES",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('FILTER - CSV FILES').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "COPY DATA - CSV FILES",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"enableStaging": false
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "FOR EACH LOOP-THROUGH JSON FILES",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FILTER JSON FILES",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('FILTER JSON FILES').output.value",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"folder": {
