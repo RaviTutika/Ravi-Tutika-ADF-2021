@@ -30,6 +30,52 @@
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "FILTER - CSV FILES",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata -  CSB AND JSON CHILDITEMS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata -  CSB AND JSON CHILDITEMS').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@endswith('@item().name','.csv')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "FILTER JSON FILES",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata -  CSB AND JSON CHILDITEMS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata -  CSB AND JSON CHILDITEMS').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@endswith('@item().name','.json')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"folder": {
