@@ -1,17 +1,17 @@
 {
-	"name": "DS_FILER_COPYDATA_INPUT",
+	"name": "DS_FILTERCOPYDATA_OUTPUT",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZBLB_Input",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"ds_Source_FileName_Param": {
+			"ds_Sink_FileName_Param": {
 				"type": "string"
 			}
 		},
 		"folder": {
-			"name": "Data Factory Input - Datasets"
+			"name": "Data Factory Output - Datasets"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
@@ -19,10 +19,10 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": {
-					"value": "@dataset().ds_Source_FileName_Param",
+					"value": "@dataset().ds_Sink_FileName_Param",
 					"type": "Expression"
 				},
-				"container": "dynamicinputcontainer"
+				"container": "dynamicoutputcontainer"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
