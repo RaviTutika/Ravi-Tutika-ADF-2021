@@ -1,0 +1,21 @@
+{
+	"name": "DS_AZBLB_OUTPUT_CSV_TO_JSON",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBLB_Input",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Data Factory Output - Datasets"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "blobcontainer"
+			}
+		},
+		"schema": {}
+	}
+}
