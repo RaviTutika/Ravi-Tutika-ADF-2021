@@ -1,5 +1,5 @@
 {
-	"name": "PL_COPYDATA_CSVCONTAINER_JSON_CONTAINER_DYANMIC",
+	"name": "PL_LAB_04_COPYDATA_CSVCONTAINER_JSON_CONTAINER_DYANMIC",
 	"properties": {
 		"activities": [
 			{
@@ -24,6 +24,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
