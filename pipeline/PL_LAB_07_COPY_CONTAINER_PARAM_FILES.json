@@ -32,6 +32,25 @@
 					},
 					"firstRowOnly": false
 				}
+			},
+			{
+				"name": "ForEach - Loop  Through Container info",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup - Get Container Details",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup - Get Container Details').output.value",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"folder": {
