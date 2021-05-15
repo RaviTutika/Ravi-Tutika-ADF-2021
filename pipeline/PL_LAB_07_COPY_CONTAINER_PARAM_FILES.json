@@ -52,8 +52,8 @@
 					},
 					"activities": [
 						{
-							"name": "Get Metadata - Check For Child items",
-							"type": "GetMetadata",
+							"name": "COPY DATA - BASED ON CONTAINER PARAM",
+							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "7.00:00:00",
@@ -64,7 +64,41 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"dataset": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFileName": "*",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
 									"referenceName": "DS_Multiple_Copy_Container_Param_Input",
 									"type": "DatasetReference",
 									"parameters": {
@@ -73,18 +107,20 @@
 											"type": "Expression"
 										}
 									}
-								},
-								"fieldList": [
-									"childItems"
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
 								}
-							}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_MultipleCopy_Destination_Container",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_Sink_Container_Param": {
+											"value": "@item().DestinationContainer",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
 					]
 				}
