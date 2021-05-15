@@ -1,0 +1,35 @@
+{
+	"name": "DS_MetaData_Container_Details",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBLB_Input",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Data Factory Input - Datasets"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Container_Info.txt",
+				"container": "metadata"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "SourceContainer",
+				"type": "String"
+			},
+			{
+				"name": "DestinationContainer",
+				"type": "String"
+			}
+		]
+	}
+}
