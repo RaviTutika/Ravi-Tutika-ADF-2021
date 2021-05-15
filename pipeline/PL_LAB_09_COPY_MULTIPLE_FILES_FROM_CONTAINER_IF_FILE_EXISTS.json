@@ -100,7 +100,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@equals(length(activity('Get Metadata -  Container Files').output.childitems),0)",
+									"value": "@greater(length(activity('Get Metadata -  Container Files').output.childitems),0)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
