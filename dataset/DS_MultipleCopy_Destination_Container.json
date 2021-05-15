@@ -1,0 +1,33 @@
+{
+	"name": "DS_MultipleCopy_Destination_Container",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBLB_Input",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ds_Sink_Container_Param": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Data Factory Output - Datasets"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": {
+					"value": "@dataset().ds_Sink_Container_Param",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
