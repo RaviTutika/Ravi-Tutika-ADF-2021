@@ -69,10 +69,6 @@
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": {
-											"value": "@item().SourceContainer",
-											"type": "Expression"
-										},
 										"wildcardFileName": "*",
 										"enablePartitionDiscovery": false
 									},
@@ -104,7 +100,13 @@
 							"inputs": [
 								{
 									"referenceName": "DS_Multiple_Copy_Container_Param_Input",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_Source_Container_Param": {
+											"value": "@item().SourceContainer",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
