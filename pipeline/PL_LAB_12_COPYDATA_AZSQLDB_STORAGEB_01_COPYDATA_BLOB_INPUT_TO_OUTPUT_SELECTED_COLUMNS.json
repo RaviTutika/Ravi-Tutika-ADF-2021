@@ -17,6 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT SalesPerson,EmailAddress,Phone,ModifiedDate FROM SALESLT.Customer",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -43,7 +44,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_AZSQLBD_INPUT",
+						"referenceName": "DS_AZSQLDB_SELECTED_COLUM_INPUT",
 						"type": "DatasetReference"
 					}
 				],
