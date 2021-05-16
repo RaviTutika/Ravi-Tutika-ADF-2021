@@ -189,59 +189,35 @@
 					"storedProcedureName": "[dbo].[usp_Audit_logs]",
 					"storedProcedureParameters": {
 						"DataFactoryName": {
-							"value": {
-								"value": "@pipeline().DataFactory",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "String"
 						},
 						"EndTime": {
-							"value": {
-								"value": "@activity('COPY MULTIPLE SQL TABLES TO STORAGE').output.edntime",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "DateTime"
 						},
 						"PipelineID": {
-							"value": {
-								"value": "@pipeline().RunId",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "String"
 						},
 						"PipelineName": {
-							"value": {
-								"value": "@pipeline().Pipeline",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "String"
 						},
 						"RowsRead": {
-							"value": {
-								"value": "@activity('COPY MULTIPLE SQL TABLES TO STORAGE').output.rowsRead",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "Int32"
 						},
 						"RowsWritten": {
-							"value": {
-								"value": "@activity('COPY MULTIPLE SQL TABLES TO STORAGE').output.rowswritten",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "Int32"
 						},
 						"StartTime": {
-							"value": {
-								"value": "@activity('COPY MULTIPLE SQL TABLES TO STORAGE').output.startime",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "DateTime"
 						},
 						"Status": {
-							"value": {
-								"value": "@activity('COPY MULTIPLE SQL TABLES TO STORAGE').status1",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "String"
 						}
 					}
@@ -274,59 +250,35 @@
 					"storedProcedureName": "[dbo].[usp_Audit_logs]",
 					"storedProcedureParameters": {
 						"DataFactoryName": {
-							"value": {
-								"value": "@pipeline().DataFactory",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "String"
 						},
 						"EndTime": {
-							"value": {
-								"value": "@activity('COPY MULTIPLE SQL TABLES TO STORAGE').output.edntime",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "DateTime"
 						},
 						"PipelineID": {
-							"value": {
-								"value": "@pipeline().RunId",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "String"
 						},
 						"PipelineName": {
-							"value": {
-								"value": "@pipeline().Pipeline",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "String"
 						},
 						"RowsRead": {
-							"value": {
-								"value": "@activity('COPY MULTIPLE SQL TABLES TO STORAGE').output.rowsRead",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "Int32"
 						},
 						"RowsWritten": {
-							"value": {
-								"value": "@activity('COPY MULTIPLE SQL TABLES TO STORAGE').output.rowswritten",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "Int32"
 						},
 						"StartTime": {
-							"value": {
-								"value": "@activity('COPY MULTIPLE SQL TABLES TO STORAGE').output.startime",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "DateTime"
 						},
 						"Status": {
-							"value": {
-								"value": "@activity('COPY MULTIPLE SQL TABLES TO STORAGE').status1",
-								"type": "Expression"
-							},
+							"value": "",
 							"type": "String"
 						}
 					}
