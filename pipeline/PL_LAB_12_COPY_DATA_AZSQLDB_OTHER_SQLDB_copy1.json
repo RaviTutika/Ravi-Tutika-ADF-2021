@@ -1,0 +1,95 @@
+{
+	"name": "PL_LAB_12_COPY_DATA_AZSQLDB_OTHER_SQLDB_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "COPY DATA - AZSQL DB TO OTHER AZURE SQL DB",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": {
+							"value": "@{concat('DROP TABLE ',pipeline().parameters.PL_Sink_Schema_Param,'.',pipeline().parameters.PL_Sink_Table_Param)}",
+							"type": "Expression"
+						},
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_AZSQLDB_DB_COPY_INPUT",
+						"type": "DatasetReference",
+						"parameters": {
+							"db_Source_Schema_Param": {
+								"value": "@pipeline().parameters.PL_Source_Schema_Param",
+								"type": "Expression"
+							},
+							"db_Source_Table_Param": {
+								"value": "@pipeline().parameters.PL_Source_Table_Param",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_AZSQLDB_DB_COPY_OUTPUT",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_Sink_Schema_Param": {
+								"value": "@pipeline().parameters.PL_Sink_Schema_Param",
+								"type": "Expression"
+							},
+							"ds_Sink_Table_Param": {
+								"value": "@pipeline().parameters.PL_Sink_Table_Param",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"PL_Source_Schema_Param": {
+				"type": "string"
+			},
+			"PL_Sink_Schema_Param": {
+				"type": "string"
+			},
+			"PL_Source_Table_Param": {
+				"type": "string"
+			},
+			"PL_Sink_Table_Param": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Azure Data Factory Master Program - Pipelines"
+		},
+		"annotations": []
+	}
+}
