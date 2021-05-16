@@ -1,0 +1,175 @@
+{
+	"name": "PL_LAB_14_COPY_MULTIPLE_TABLE_DB_TO_STORAGE",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup - Get Table MetaData",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_AZSQLDB_METADATA_TABLE",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach - Loop Through Tables",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup - Get Table MetaData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup - Get Table MetaData').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get Metadata - Check for Existence",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DS_AZSQLDB_LOOP_TABLES_INPUT",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_Source_Schema_name": {
+											"value": "@item().SchemaName",
+											"type": "Expression"
+										},
+										"ds_Source_Table_Name": {
+											"value": "@item().TableName",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"exists"
+								]
+							}
+						},
+						{
+							"name": "If Condition - Run Activities on Existence of Tables",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata - Check for Existence",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@activity('Get Metadata - Check for Existence').output.Exists",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "COPY MULTIPLE SQL TABLES TO STORAGE",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "DelimitedTextSink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												},
+												"formatSettings": {
+													"type": "DelimitedTextWriteSettings",
+													"quoteAllText": true,
+													"fileExtension": ".txt"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "DS_AZSQLDB_LOOP_TABLES_INPUT",
+												"type": "DatasetReference",
+												"parameters": {
+													"ds_Source_Schema_name": {
+														"value": "@item().SchemaName",
+														"type": "Expression"
+													},
+													"ds_Source_Table_Name": {
+														"value": "@item().TableName",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "DS_AZSQLDB_LOOPTABLE_OUTPUT_BLOB",
+												"type": "DatasetReference",
+												"parameters": {
+													"ds_Sink_Container_name": "salescontainer"
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "Azure Data Factory Master Program - Pipelines"
+		},
+		"annotations": []
+	}
+}
