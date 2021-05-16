@@ -167,7 +167,7 @@
 				}
 			},
 			{
-				"name": "Stored procedure - On Failure",
+				"name": "Stored procedure - On Success",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
@@ -252,7 +252,7 @@
 				}
 			},
 			{
-				"name": "Stored procedure - On Success_copy1",
+				"name": "Stored procedure - On Failure",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
