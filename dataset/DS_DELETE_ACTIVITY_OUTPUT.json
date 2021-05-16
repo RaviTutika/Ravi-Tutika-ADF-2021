@@ -1,0 +1,25 @@
+{
+	"name": "DS_DELETE_ACTIVITY_OUTPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBLB_Input",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Data Factory Output - Datasets"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "deleteactivityoutput"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
