@@ -78,6 +78,17 @@
 						"value": "@equals(activity('COPY MULTIPL _FILES').output.filesread,activity('COPY MULTIPL _FILES').output.fileswritten)",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "WAIT FOR 2 SECONDS",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 2
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "Delete - Source Files",
