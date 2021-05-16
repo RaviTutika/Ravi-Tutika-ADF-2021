@@ -1,0 +1,23 @@
+{
+	"name": "DS_AZSQLDB_DB_COPY_INPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQL_DB",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"db_Source_Schema_Param": {
+				"type": "string"
+			},
+			"db_Source_Table_Param": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Data Factory Input - Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}

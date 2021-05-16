@@ -1,0 +1,23 @@
+{
+	"name": "DS_AZSQLDB_DB_COPY_OUTPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQLDB_MASTER_02",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ds_Sink_Schema_Param": {
+				"type": "string"
+			},
+			"ds_Sink_Table_Param": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Data Factory Output - Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
