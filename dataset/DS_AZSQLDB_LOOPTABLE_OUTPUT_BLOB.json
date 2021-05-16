@@ -1,0 +1,32 @@
+{
+	"name": "DS_AZSQLDB_LOOPTABLE_OUTPUT_BLOB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBLB_Input",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ds_Sink_Container_name": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Data Factory Output - Datasets"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": {
+					"value": "@dataset().ds_Sink_Container_name",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
