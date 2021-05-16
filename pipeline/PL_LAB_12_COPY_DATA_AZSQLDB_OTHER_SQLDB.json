@@ -15,8 +15,56 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"enableStaging": false
-				}
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_AZSQLDB_DB_COPY_INPUT",
+						"type": "DatasetReference",
+						"parameters": {
+							"db_Source_Schema_Param": {
+								"value": "@pipeline().parameters.PL_Source_Schema_Param",
+								"type": "Expression"
+							},
+							"db_Source_Table_Param": {
+								"value": "@pipeline().parameters.PL_Source_Table_Param",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_AZSQLDB_DB_COPY_OUTPUT",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_Sink_Schema_Param": {
+								"value": "@pipeline().parameters.PL_Sink_Schema_Param",
+								"type": "Expression"
+							},
+							"ds_Sink_Table_Param": {
+								"value": "@pipeline().parameters.PL_Sink_Table_Param",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
