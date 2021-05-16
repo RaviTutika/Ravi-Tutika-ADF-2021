@@ -1,0 +1,41 @@
+{
+	"name": "PL_LAB_12_COPY_DATA_AZSQLDB_OTHER_SQLDB",
+	"properties": {
+		"activities": [
+			{
+				"name": "COPY DATA - AZSQL DB TO OTHER AZURE SQL DB",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"enableStaging": false
+				}
+			}
+		],
+		"parameters": {
+			"PL_Source_Schema_Param": {
+				"type": "string"
+			},
+			"PL_Sink_Schema_Param": {
+				"type": "string"
+			},
+			"PL_Source_Table_Param": {
+				"type": "string"
+			},
+			"PL_Sink_Table_Param": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Azure Data Factory Master Program - Pipelines"
+		},
+		"annotations": []
+	}
+}
