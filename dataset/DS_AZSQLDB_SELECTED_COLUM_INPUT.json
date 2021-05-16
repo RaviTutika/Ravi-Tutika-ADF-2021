@@ -1,0 +1,15 @@
+{
+	"name": "DS_AZSQLDB_SELECTED_COLUM_INPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQL_DB",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Data Factory Input - Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
