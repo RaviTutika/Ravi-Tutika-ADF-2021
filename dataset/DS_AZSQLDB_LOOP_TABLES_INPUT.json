@@ -1,0 +1,20 @@
+{
+	"name": "DS_AZSQLDB_LOOP_TABLES_INPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQL_DB",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ds_Source_Schema_name": {
+				"type": "string"
+			},
+			"ds_Source_Table_Name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
