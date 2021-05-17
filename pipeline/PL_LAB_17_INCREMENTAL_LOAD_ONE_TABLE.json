@@ -24,7 +24,7 @@
 						"referenceName": "DS_AZSQLDB_OLDWATERMAR_ACTIVITY",
 						"type": "DatasetReference"
 					},
-					"firstRowOnly": false
+					"firstRowOnly": true
 				}
 			},
 			{
