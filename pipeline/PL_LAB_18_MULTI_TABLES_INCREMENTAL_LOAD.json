@@ -59,6 +59,10 @@
 							"typeProperties": {
 								"source": {
 									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "SELECT * FROM watermarktable_MultiLoad WHERE \nTableName = '@{item().TABLE_NAME}'",
+										"type": "Expression"
+									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
@@ -79,7 +83,109 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "SELECT MAX(@{item().WaterMark_Column}) AS NewWateraMarkValue FROM @{item().TABLE_NAME}",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "DS_AZSQLDB_OLDWATERMAR_ACTIVITY",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "COPY DATA - MULTI TABLE INCREMENTAL LOAD",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Lookup - OldWaterMarkValue",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Lookup - NewWaterMarkValue",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "select * from @{item().TABLE_NAME} where @{item().WaterMark_Column} >\n'@{activity('Lookup - NewWaterMarkValue').output.firstRow.WatermarkValue}' \nand @{item().WaterMark_Column} <= '@{activity('Lookup - NewWaterMarkValue').output.firstRow.NewWateraMarkValue}'",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_MULTILOAD_OLDWATERMARK_INPUT",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Stored procedure - Update Water Table",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "COPY DATA - MULTI TABLE INCREMENTAL LOAD",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[usp_write_watermark_MultiLoad]",
+								"storedProcedureParameters": {
+									"LastModifiedtime": {
+										"value": {
+											"value": "@activity('Lookup - NewWaterMarkValue').output.firstRow.NewWateraMarkValue",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"TableName": {
+										"value": {
+											"value": "@activity('Lookup - OldWaterMarkValue').output.firstRow.TableName",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AZSQLDB_KV",
+								"type": "LinkedServiceReference"
+							}
 						}
 					]
 				}
