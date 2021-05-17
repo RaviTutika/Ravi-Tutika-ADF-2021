@@ -1,0 +1,36 @@
+{
+	"name": "DS_AZSQLDB_TABLE_CONFIG",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQLDB_KV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Data Factory Input - Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TABLE_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "WaterMark_Column",
+				"type": "varchar"
+			},
+			{
+				"name": "TableType",
+				"type": "varchar"
+			},
+			{
+				"name": "StoredProcedureNameForMergeOperation",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Table_ConfigData"
+		}
+	}
+}
