@@ -77,7 +77,7 @@
 					"url": "https://prod-07.centralus.logic.azure.com:443/workflows/8aaaa039053845c2862311e262c535d5/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=PX3FN9y-_35zOfIj7QmgobDuxiYhfD5RuPbepvktAe8",
 					"method": "POST",
 					"body": {
-						"value": "{\n\"title\":\"\",\n\"message\":\"\",\n\"color\":\"\",\n\"datafactoryname\":\"\",\n\"PipelineName\":\"\",\n\"PipelineID\":\"\",\n\"time\":\"\"\n}",
+						"value": "{\n\"title\":\"PIPELINE FINISHED\",\n\"message\":\"DEMO-PIPELINE FINISHED SUCCESSFULLY\",\n\"color\":\"Green\",\n\"datafactoryname\":\"@{pipeline().DataFactory}\",\n\"PipelineName\":\"@{pipeline().Pipeline}\",\n\"PipelineID\":\"@{pipeline().RunId}\",\n\"time\":\"utcnow()\"\n}",
 						"type": "Expression"
 					}
 				}
