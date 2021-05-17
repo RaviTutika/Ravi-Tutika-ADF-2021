@@ -130,7 +130,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "select * from @{item().TABLE_NAME} where @{item().WaterMark_Column} >\n'@{activity('Lookup - NewWaterMarkValue').output.firstRow.WatermarkValue}' \nand @{item().WaterMark_Column} <= '@{activity('Lookup - NewWaterMarkValue').output.firstRow.NewWateraMarkValue}'",
+										"value": "select * from @{item().TABLE_NAME} where @{item().WaterMark_Column} >\n'@{activity('Lookup - OldWaterMarkValue').output.firstRow.WatermarkValue}' \nand @{item().WaterMark_Column} <= '@{activity('Lookup - NewWaterMarkValue').output.firstRow.NewWateraMarkValue}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
