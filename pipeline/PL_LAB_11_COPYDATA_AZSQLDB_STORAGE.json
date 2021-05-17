@@ -1,5 +1,5 @@
 {
-	"name": "PL_LAB_20_CASE_01_COPYDATA_AZSQLDB_STORAGE_EMAIL_NOTIFICATION_SUCCESS",
+	"name": "PL_LAB_11_COPYDATA_AZSQLDB_STORAGE",
 	"properties": {
 		"activities": [
 			{
@@ -17,7 +17,6 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "DROP TABLE A",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},

@@ -1,5 +1,5 @@
 {
-	"name": "PL_LAB_19_CASE_02_COPYDATA_AZSQLDB_STORAGE_EMAIL_NOTIFICATION_FAILURE",
+	"name": "PL_LAB_20_CASE_02_COPYDATA_AZSQLDB_STORAGE_EMAIL_NOTIFICATION_FAILURE",
 	"properties": {
 		"activities": [
 			{
@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "PL_LAB_19_CASE_01_COPYDATA_AZSQLDB_STORAGE_EMAIL_NOTIFICATION_SUCCESS",
+						"referenceName": "PL_LAB_20_CASE_01_COPYDATA_AZSQLDB_STORAGE_EMAIL_NOTIFICATION_SUCCESS",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true

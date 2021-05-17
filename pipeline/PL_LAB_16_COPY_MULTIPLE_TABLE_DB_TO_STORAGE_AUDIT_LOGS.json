@@ -1,5 +1,5 @@
 {
-	"name": "PL_LAB_15_COPY_MULTIPLE_TABLE_DB_TO_STORAGE_AUDIT_LOGS",
+	"name": "PL_LAB_16_COPY_MULTIPLE_TABLE_DB_TO_STORAGE_AUDIT_LOGS",
 	"properties": {
 		"activities": [
 			{
