@@ -1,6 +1,52 @@
 {
 	"name": "PL_LAB_21_COPYDATA_DB_STORAGE_MUL_AUDIT_EMAIL_NOTIFICATION",
 	"properties": {
+		"activities": [
+			{
+				"name": "Lookup -  TableMetadata_Load",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_AZSQLDB_TABLEMETADATA_INPUT",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach - Loop Through Table MetaData",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup -  TableMetadata_Load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup -  TableMetadata_Load').output.value",
+						"type": "Expression"
+					}
+				}
+			}
+		],
 		"folder": {
 			"name": "Azure Data Factory Master Program - Pipelines"
 		},
