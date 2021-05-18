@@ -1,0 +1,33 @@
+{
+	"name": "DS_AZSQL_DB_SCHEMA_TABLE_EXISTS_INPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQLDB_KV",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ds_Schema_Source_Param": {
+				"type": "string"
+			},
+			"ds_Table_Source_Param": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Data Factory Input - Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().ds_Schema_Source_Param",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().ds_Table_Source_Param",
+				"type": "Expression"
+			}
+		}
+	}
+}
