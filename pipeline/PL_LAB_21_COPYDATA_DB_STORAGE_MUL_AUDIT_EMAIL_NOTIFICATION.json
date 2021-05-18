@@ -56,7 +56,115 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DS_AZSQL_DB_SCHEMA_TABLE_EXISTS_INPUT",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_Schema_Source_Param": {
+											"value": "@item().Schemaname",
+											"type": "Expression"
+										},
+										"ds_Table_Source_Param": {
+											"value": "@item().Tablename",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"exists"
+								]
+							}
+						},
+						{
+							"name": "If Condition - Copy Data Based on Table Status",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata - Getting Table Exists Status",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"ifFalseActivities": [
+									{
+										"name": "Stored procedure - Update TableMetaData",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_UpdateTableMetadata_Load]",
+											"storedProcedureParameters": {
+												"IsActive": {
+													"value": "0",
+													"type": "Boolean"
+												},
+												"TableName": {
+													"value": {
+														"value": "@item().Tablename",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_AZSQLDB_KV",
+											"type": "LinkedServiceReference"
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "COPY DATA FROM AZURE SQL TO BLOB",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"enableStaging": false
+										},
+										"inputs": [
+											{
+												"referenceName": "DS_AZSQL_DB_SCHEMA_TABLE_EXISTS_INPUT",
+												"type": "DatasetReference",
+												"parameters": {
+													"ds_Schema_Source_Param": {
+														"value": "@item().Schemaname",
+														"type": "Expression"
+													},
+													"ds_Table_Source_Param": {
+														"value": "@item().Tablename",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
 						}
 					]
 				}
