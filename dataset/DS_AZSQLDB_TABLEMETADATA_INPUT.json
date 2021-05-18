@@ -1,0 +1,36 @@
+{
+	"name": "DS_AZSQLDB_TABLEMETADATA_INPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQLDB_KV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Data Factory Input - Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Schemaname",
+				"type": "varchar"
+			},
+			{
+				"name": "Tablename",
+				"type": "varchar"
+			},
+			{
+				"name": "ContainerName",
+				"type": "varchar"
+			},
+			{
+				"name": "IsActive",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TableMetadata_Load"
+		}
+	}
+}
