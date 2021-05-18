@@ -111,7 +111,7 @@
 											"storedProcedureName": "[dbo].[usp_UpdateTableMetadata_Load]",
 											"storedProcedureParameters": {
 												"IsActive": {
-													"value": "0",
+													"value": "False",
 													"type": "Boolean"
 												},
 												"TableName": {
