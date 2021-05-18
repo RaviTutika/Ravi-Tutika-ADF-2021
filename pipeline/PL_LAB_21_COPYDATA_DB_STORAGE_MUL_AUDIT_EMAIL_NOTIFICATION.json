@@ -1,0 +1,9 @@
+{
+	"name": "PL_LAB_21_COPYDATA_DB_STORAGE_MUL_AUDIT_EMAIL_NOTIFICATION",
+	"properties": {
+		"folder": {
+			"name": "Azure Data Factory Master Program - Pipelines"
+		},
+		"annotations": []
+	}
+}
