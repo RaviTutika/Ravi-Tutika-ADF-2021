@@ -90,6 +90,10 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
+								"expression": {
+									"value": "@activity('Get Metadata - Getting Table Exists Status').output.Exists",
+									"type": "Expression"
+								},
 								"ifFalseActivities": [
 									{
 										"name": "Stored procedure - Update TableMetaData",
