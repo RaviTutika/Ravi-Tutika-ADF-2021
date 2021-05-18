@@ -289,6 +289,105 @@
 											"referenceName": "LS_AZSQLDB_KV",
 											"type": "LinkedServiceReference"
 										}
+									},
+									{
+										"name": "Failure_Audit",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "COPY DATA FROM AZURE SQL TO BLOB",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[audit_sp]",
+											"storedProcedureParameters": {
+												"adfname": {
+													"value": {
+														"value": "@pipeline().DataFactory",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"copyduration": {
+													"value": {
+														"value": "@activity('COPY DATA FROM AZURE SQL TO BLOB').output.copyDuration",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"endtime": {
+													"value": {
+														"value": "@activity('COPY DATA FROM AZURE SQL TO BLOB').ExecutionEndTime",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"errormessage": {
+													"value": {
+														"value": "@activity('COPY DATA FROM AZURE SQL TO BLOB').Error",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"pipelinename": {
+													"value": {
+														"value": "@pipeline().Pipeline",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"pipelinerunid": {
+													"value": {
+														"value": "@pipeline().RunId",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"recordsread": {
+													"value": {
+														"value": "@activity('COPY DATA FROM AZURE SQL TO BLOB').output.rowsRead",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"recordswritten": {
+													"value": {
+														"value": "@activity('COPY DATA FROM AZURE SQL TO BLOB').output.rowsCopied",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"starttime": {
+													"value": {
+														"value": "@activity('COPY DATA FROM AZURE SQL TO BLOB').ExecutionStartTime",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"status": {
+													"value": {
+														"value": "@activity('COPY DATA FROM AZURE SQL TO BLOB').Status",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_AZSQLDB_KV",
+											"type": "LinkedServiceReference"
+										}
 									}
 								]
 							}
