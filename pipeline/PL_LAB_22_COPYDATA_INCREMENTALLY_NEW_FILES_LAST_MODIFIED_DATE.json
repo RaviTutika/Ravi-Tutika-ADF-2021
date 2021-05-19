@@ -26,6 +26,25 @@
 					},
 					"firstRowOnly": false
 				}
+			},
+			{
+				"name": "ForEach - Loop Through MetaData",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup - MetaData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup - MetaData').output.value",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"folder": {
