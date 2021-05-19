@@ -78,8 +78,63 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"enableStaging": false
-							}
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFileName": "*",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_AZBLB_COPY_METADATA_FILE_INCREMENTAL_LOAD_INPUT",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_Source_Container_name": {
+											"value": "@item().sourcecontainer",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_AZBLB_FILE_INCREMENTAL_LOAD_OUTPUT",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_Sink_Container_Name": {
+											"value": "@item().sinkcontainer",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
 					]
 				}
