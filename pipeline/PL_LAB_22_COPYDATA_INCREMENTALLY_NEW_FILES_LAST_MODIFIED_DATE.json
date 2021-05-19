@@ -85,7 +85,7 @@
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
 										"modifiedDatetimeStart": {
-											"value": "convertToUtc(@item().lpv,'india Stadard time')",
+											"value": "@convertToUtc(item().lpv,'india standard time')",
 											"type": "Expression"
 										},
 										"modifiedDatetimeEnd": {
