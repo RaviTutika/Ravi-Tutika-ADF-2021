@@ -1,0 +1,16 @@
+{
+	"name": "DS_AZSQLDB_EVENT_TRIGGER_OUTPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZSQLDB_KV",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "EventTriggerOutput"
+		}
+	}
+}
