@@ -1,0 +1,40 @@
+{
+	"name": "DS_BLB_DB_EVENT_TRIGGER_INPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZBLB_Input",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ds_Container_name_Param": {
+				"type": "string"
+			},
+			"ds_FileName_Param": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Data Factory Input - Datasets"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().ds_FileName_Param",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().ds_Container_name_Param",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
