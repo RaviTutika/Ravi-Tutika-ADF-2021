@@ -5,6 +5,9 @@
 			"referenceName": "LS_AZSQLDB_KV",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Data Factory Output - Datasets"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
