@@ -3,75 +3,13 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "COPY DATA - GEN2 SOURCE TO GEN2 SINK",
-				"type": "Copy",
+				"name": "Wait - Some Time",
+				"type": "Wait",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"wildcardFileName": "*",
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".csv"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "DS_TUMBLING_WINDOW_TRIGGER_INPUT",
-						"type": "DatasetReference",
-						"parameters": {
-							"ds_Source_Dataset_WindowStart_Time": {
-								"value": "@pipeline().parameters.PL_WIndow_StartTime_Param",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DS_TUMBLING_WINDOW_OUTPUT",
-						"type": "DatasetReference",
-						"parameters": {
-							"ds_Sink_WindowStartTime_Param": {
-								"value": "@pipeline().parameters.PL_WIndow_StartTime_Param",
-								"type": "Expression"
-							}
-						}
-					}
-				]
+					"waitTimeInSeconds": 5
+				}
 			}
 		],
 		"parameters": {
