@@ -1,6 +1,90 @@
 {
 	"name": "PL_LAB_24_CASE01_TUMBLING_WINDOW_TRIGGER_WITHOUT DEPENDENCY",
 	"properties": {
+		"activities": [
+			{
+				"name": "COPY DATA - GEN2 SOURCE TO GEN2 SINK",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_TUMBLING_WINDOW_TRIGGER_INPUT",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_Source_Dataset_WindowStart_Time": {
+								"value": "@pipeline().parameters.PL_WIndow_StartTime_Param",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_TUMBLING_WINDOW_OUTPUT",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_Sink_WindowStartTime_Param": {
+								"value": "@pipeline().parameters.PL_WIndow_StartTime_Param",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"PL_WIndow_StartTime_Param": {
+				"type": "string"
+			},
+			"PL_WIndow_EndTime_Param": {
+				"type": "string"
+			},
+			"PL_Trigger_StartTime_Param": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "Azure Data Factory Master Program - Pipelines"
 		},
