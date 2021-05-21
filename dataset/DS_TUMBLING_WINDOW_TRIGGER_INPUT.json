@@ -1,0 +1,33 @@
+{
+	"name": "DS_TUMBLING_WINDOW_TRIGGER_INPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZ_GEN2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ds_Source_Dataset_WindowStart_Time": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Data Factory Input - Datasets"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@substring(replace(dataset().ds_Source_Dataset_WindowStart_Time,'-','/'),0,10)",
+					"type": "Expression"
+				},
+				"fileSystem": "global/cust/"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
