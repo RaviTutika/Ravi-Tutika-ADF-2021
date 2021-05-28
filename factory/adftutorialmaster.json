@@ -1,0 +1,9 @@
+{
+	"name": "adftutorialmaster",
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "cf18ead5-9beb-4464-acec-66e7583f9ae3",
+		"tenantId": "05598d4d-2188-462a-abb0-4def57b882da"
+	}
+}
